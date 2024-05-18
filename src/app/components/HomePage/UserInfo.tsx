@@ -1,19 +1,6 @@
 "use client";
 import React from "react";
 
-const MealOfTheDay = () => {
-  // this needs some fixing... not sure if I want to keep it like this...GET BACK TO THIS!
-  return (
-    <div className="text-white border-2 flex justify-right m-10">
-      <img src="/images/plate1.jpg" alt="MOFT" className="h-32 w-48"></img>
-      <p>
-        Special offer! 10% off if this dish is ordered! With DISH OF THE DAY
-        discount!
-      </p>
-    </div>
-  );
-};
-
 const UserInfo = () => {
   return (
     <>
@@ -37,7 +24,6 @@ const UserInfo = () => {
           </form>
         </div>
       </div>
-      <MealOfTheDay />
     </>
   );
 };
