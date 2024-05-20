@@ -16,9 +16,28 @@ const getRandomDish = async (): Promise<Dish> => {
   const response = await res.json();
   return response.meals[0];
 };
+const postRandomDish = async (dish: Dish): Promise<Dish> => {
+  const res = await fetch("http://localhost:3001/api/orders", {
+    //breyta fetchinu þegar þú ert komin með CART!
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(dish),
+  });
+
+  if (!res.ok) {
+    throw new Error("Failed to post data");
+  }
+
+  const response = await res.json();
+  console.log("posted order", response);
+  return response;
+};
 
 const RandomDish = () => {
   const [dish, setDish] = useState<Dish | null>(null);
+  const [quantity, setQuantity] = useState("");
 
   const fetchDish = async () => {
     try {
@@ -40,6 +59,14 @@ const RandomDish = () => {
   if (!dish) {
     return <p>Loading...</p>;
   }
+
+  const handleAddToCart = async () => {
+    if (dish && quantity) {
+      await postRandomDish(dish);
+      await fetchDish();
+      setQuantity("");
+    }
+  };
 
   const ScrollableComponent = () => {
     return (
@@ -66,6 +93,28 @@ const RandomDish = () => {
           className="border-double border-4 border-green-950"
         ></img>
         <ScrollableComponent />
+        <div className="m-5">
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              handleAddToCart();
+            }}
+          >
+            <label>
+              Quantity
+              <input
+                className="text-black"
+                type="number"
+                value={quantity}
+                onChange={(e) => setQuantity(e.target.value)}
+              />
+            </label>
+            <button type="submit" className="">
+              {" "}
+              Add To Cart
+            </button>
+          </form>
+        </div>
       </div>
     </>
   );
