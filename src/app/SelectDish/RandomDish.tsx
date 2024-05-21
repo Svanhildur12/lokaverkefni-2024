@@ -1,3 +1,4 @@
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 type Dish = {
@@ -16,8 +17,9 @@ const getRandomDish = async (): Promise<Dish> => {
   const response = await res.json();
   return response.meals[0];
 };
+
 const postRandomDish = async (dish: Dish): Promise<Dish> => {
-  const res = await fetch("http://localhost:3001/api/orders", {
+  const res = await fetch("https://jsonplaceholder.typicode.com/posts", {
     //breyta fetchinu þegar þú ert komin með CART!
     method: "POST",
     headers: {
@@ -38,6 +40,7 @@ const postRandomDish = async (dish: Dish): Promise<Dish> => {
 const RandomDish = () => {
   const [dish, setDish] = useState<Dish | null>(null);
   const [quantity, setQuantity] = useState("");
+  const router = useRouter();
 
   const fetchDish = async () => {
     try {
@@ -83,6 +86,10 @@ const RandomDish = () => {
     );
   };
 
+  const refreshPage = () => {
+    fetchDish();
+  };
+
   return (
     <>
       <div>
@@ -93,28 +100,42 @@ const RandomDish = () => {
           className="border-double border-4 border-green-950"
         ></img>
         <ScrollableComponent />
-        <div className="m-5">
-          <form
-            onSubmit={(e) => {
-              e.preventDefault();
-              handleAddToCart();
-            }}
+        <button
+          className="bg-white text-black rounded-sm m-2 w-32"
+          type="button"
+          onClick={refreshPage}
+        >
+          Generate new
+        </button>
+      </div>
+      <div className="m-5">
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            handleAddToCart();
+          }}
+        >
+          <label>
+            Quantity
+            <input
+              className="text-black"
+              type="number"
+              value={quantity}
+              onChange={(e) => setQuantity(e.target.value)}
+            />
+          </label>
+          <button type="submit" className="">
+            {" "}
+            Add To Cart
+          </button>
+          <div className="mt-2"></div>
+          <button
+            className="text-white text-xl"
+            onClick={() => router.push("/SelectDrink")}
           >
-            <label>
-              Quantity
-              <input
-                className="text-black"
-                type="number"
-                value={quantity}
-                onChange={(e) => setQuantity(e.target.value)}
-              />
-            </label>
-            <button type="submit" className="">
-              {" "}
-              Add To Cart
-            </button>
-          </form>
-        </div>
+            next page
+          </button>
+        </form>
       </div>
     </>
   );
