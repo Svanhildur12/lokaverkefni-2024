@@ -1,7 +1,9 @@
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { useCart } from "../context/CartContext";
+import SelectDish from "./page";
 
-type Dish = {
+export type Dish = {
   idMeal: string;
   strMeal: string;
   strMealThumb: string;
@@ -18,14 +20,14 @@ const getRandomDish = async (): Promise<Dish> => {
   return response.meals[0];
 };
 
-const postRandomDish = async (dish: Dish): Promise<Dish> => {
+const postRandomDish = async (dishes: SelectDish[]): Promise<any> => {
   const res = await fetch("https://jsonplaceholder.typicode.com/posts", {
     //breyta fetchinu þegar þú ert komin með CART!
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify(dish),
+    body: JSON.stringify(dishes),
   });
 
   if (!res.ok) {
@@ -37,10 +39,27 @@ const postRandomDish = async (dish: Dish): Promise<Dish> => {
   return response;
 };
 
+type SelectDish = {
+  dish: Dish;
+  quantity: number | undefined;
+};
+
 const RandomDish = () => {
   const [dish, setDish] = useState<Dish | null>(null);
   const [quantity, setQuantity] = useState("");
   const router = useRouter();
+  const { addDish } = useCart();
+  const [selectedDish, setSelectedDish] = useState<{
+    [Key: string]: SelectDish;
+  }>({});
+
+  useEffect(() => {
+    fetchDish();
+  }, []);
+
+  useEffect(() => {
+    console.log("current dish:", dish);
+  }, [dish]);
 
   const fetchDish = async () => {
     try {
@@ -51,23 +70,34 @@ const RandomDish = () => {
     }
   };
 
-  useEffect(() => {
-    fetchDish();
-  }, []);
-
-  useEffect(() => {
-    console.log("current dish:", dish);
-  }, [dish]);
-
   if (!dish) {
     return <p>Loading...</p>;
   }
 
+  const handleQuantityChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setQuantity(e.target.value);
+  };
+
   const handleAddToCart = async () => {
     if (dish && quantity) {
-      await postRandomDish(dish);
-      await fetchDish();
+      const quantityNumber = parseInt(quantity);
+      if (isNaN(quantityNumber) || quantityNumber <= 0) {
+        console.log("invalid quantity");
+        return;
+      }
+      const selectedDish: SelectDish = { dish, quantity: quantityNumber };
+      console.log("adding to cart:", selectedDish);
+      addDish({
+        id: dish.idMeal,
+        name: dish.strMeal,
+        image: dish.strMealThumb,
+        instructions: dish.strInstructions,
+        quantity: quantityNumber,
+      });
+      await postRandomDish([selectedDish]);
+      setSelectedDish({});
       setQuantity("");
+      fetchDish();
     }
   };
 
@@ -110,6 +140,8 @@ const RandomDish = () => {
       </div>
       <div className="m-5">
         <form
+          id="auto"
+          name="auto"
           onSubmit={(e) => {
             e.preventDefault();
             handleAddToCart();
@@ -119,12 +151,13 @@ const RandomDish = () => {
             Quantity
             <input
               className="text-black"
+              id="number"
               type="number"
               value={quantity}
-              onChange={(e) => setQuantity(e.target.value)}
+              onChange={handleQuantityChange}
             />
           </label>
-          <button type="submit" className="">
+          <button type="submit" value="" className="">
             {" "}
             Add To Cart
           </button>

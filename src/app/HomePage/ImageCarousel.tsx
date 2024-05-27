@@ -10,7 +10,7 @@ import "swiper/swiper-bundle.css";
 
 const ImageCarousel = () => {
   return (
-    <section className="mt-20 pl-10 pr-10 pt-5 pb-5">
+    <section className=" pl-10 pr-10 pt-5 pb-5">
       <Swiper
         modules={[Pagination]}
         pagination={{ type: "bullets" }}

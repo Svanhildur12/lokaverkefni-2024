@@ -1,7 +1,8 @@
 "use client";
-import { useState, useEffect, Key } from "react";
+import { useState, useEffect } from "react";
 import DrinkBox from "../components/DrinkBoxComponent";
 import { useRouter } from "next/navigation";
+import { useCart } from "../context/CartContext";
 
 export type Drink = {
   idDrink: number;
@@ -27,42 +28,62 @@ export const fetchDrinksById = async (idDrinks: number[]): Promise<Drink[]> => {
   return Promise.all(drinkPromises);
 };
 
+const postDrinks = async (drinks: SelectDrink[]): Promise<any> => {
+  const res = await fetch("https://jsonplaceholder.typicode.com/posts", {
+    //breyta fetchinu þegar þú ert komin með CART!
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(drinks),
+  });
+
+  if (!res.ok) {
+    throw new Error("Failed to post data");
+  }
+
+  const response = await res.json();
+  console.log("posted order", response);
+  return response;
+};
+
 type SelectDrink = {
   drink: Drink;
   quantity: number | undefined;
 };
 
 const DrinksPage = () => {
-  const [drinks, setDrinks] = useState<Drink[]>([]);
+  const [drink, setDrink] = useState<Drink[]>([]);
+  const [quantity, setQuantity] = useState("");
   const [selectedDrink, setSelectedDrink] = useState<{
     [Key: string]: SelectDrink;
   }>({});
-  const [error, setError] = useState<string | null>(null);
-  const drinksIds = [0, 2, 7, 4, 5, 6];
+  const drinksIds = [0, 2, 20, 4, 5, 6];
   const router = useRouter();
+  const { addDrink } = useCart();
 
   useEffect(() => {
     const getDrink = async () => {
       try {
         const fetchedDrinks = await fetchDrinksById(drinksIds);
-        setDrinks(fetchedDrinks);
+        setDrink(fetchedDrinks);
       } catch (error) {
         console.log("error fetching drinks:", error);
-        setError;
       }
     };
     getDrink();
   }, []);
 
   useEffect(() => {
-    console.log("current drink:", drinksIds);
-  }, [drinksIds]);
+    console.log("current drink:", drink);
+  }, [drink]);
 
-  if (!drinksIds) {
+  if (!drink) {
     return <p>Loading...</p>;
   }
 
   const handleSelectDrink = (drink: Drink) => {
+    console.log("selected drink:", drink);
     setSelectedDrink((prevSelectedDrinks) => {
       const newSelectedDrinks = { ...prevSelectedDrinks };
       if (newSelectedDrinks[drink.idDrink]) {
@@ -70,6 +91,7 @@ const DrinksPage = () => {
       } else {
         newSelectedDrinks[drink.idDrink] = { drink, quantity: undefined };
       }
+      console.log("update selected drinks:", newSelectedDrinks);
       return newSelectedDrinks;
     });
   };
@@ -78,40 +100,69 @@ const DrinksPage = () => {
     idDrink: number,
     quantity: number | undefined
   ) => {
+    console.log(
+      "quantity change for drink ID:",
+      idDrink,
+      "quantity:",
+      quantity
+    );
     setSelectedDrink((prevSelectedDrinks) => ({
       ...prevSelectedDrinks,
       [idDrink]: { ...prevSelectedDrinks[idDrink], quantity },
     }));
   };
 
+  const handleAddToCart = async () => {
+    const drinksToPost = Object.values(selectedDrink).filter(
+      (item) => item.quantity !== undefined && !isNaN(item.quantity)
+    );
+    if (drinksToPost.length > 0) {
+      drinksToPost.forEach(({ drink, quantity }) => {
+        console.log("adding to cart:", {
+          id: drink.idDrink,
+          name: drink.strDrink,
+          quantity,
+        });
+        addDrink({
+          id: drink.idDrink.toString(),
+          name: drink.strDrink,
+          image: drink.strDrinkThumb,
+          instructions: drink.strInstructions,
+          quantity: quantity ?? 0,
+        });
+      });
+    }
+    await postDrinks(drinksToPost);
+    setSelectedDrink({});
+    setQuantity("");
+  };
+
   return (
     <div>
-      {error ? (
-        <div style={{ color: "red" }}>Error: {error}</div>
-      ) : (
-        <div className="flex flex-wrap">
-          {drinks.map((drink) => (
-            <DrinkBox
-              key={drink.idDrink}
-              drink={drink}
-              onSelect={handleSelectDrink}
-              isSelected={!!selectedDrink[drink.idDrink]}
-              quantity={selectedDrink[drink.idDrink]?.quantity}
-              onQuantityChange={handleQuantityChange}
-            />
-          ))}
-        </div>
-      )}
+      <div className="flex flex-wrap">
+        {drink.map((drink) => (
+          <DrinkBox
+            key={drink.idDrink}
+            drink={drink}
+            onSelect={handleSelectDrink}
+            isSelected={!!selectedDrink[drink.idDrink]}
+            quantity={selectedDrink[drink.idDrink]?.quantity}
+            onQuantityChange={(quantity) =>
+              handleQuantityChange(drink.idDrink, quantity)
+            }
+          />
+        ))}
+      </div>
       <div>
         <h2>Selected Drinks</h2>
         {Object.values(selectedDrink).map(({ drink, quantity }) => (
           <div key={drink.idDrink}>
             <p>
-              {drink.strDrink} - Quantity: {quantity}
+              {drink.strDrink} - Q: {quantity ?? ""}
             </p>
           </div>
         ))}
-        <button type="submit" className="">
+        <button onClick={handleAddToCart} value="" type="submit" className="">
           {" "}
           Add To Cart
         </button>

@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import { Drink } from "../SelectDrink/DrinkSelection";
 
 type DrinkBoxProps = {
@@ -7,7 +7,7 @@ type DrinkBoxProps = {
   onSelect: (drink: Drink) => void;
   isSelected: boolean;
   quantity: number | undefined;
-  onQuantityChange: (idDrink: number, quantity: number | undefined) => void;
+  onQuantityChange: (quantity: number | undefined) => void;
 };
 
 const DrinkBox = ({
@@ -17,12 +17,10 @@ const DrinkBox = ({
   quantity,
   onQuantityChange,
 }: DrinkBoxProps) => {
-  const handleQuantityChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleQuantityBlur = (event: React.FocusEvent<HTMLInputElement>) => {
     const value = event.target.value;
-    const newQuantity = value === "" ? undefined : parseInt(event.target.value);
-    if (newQuantity === undefined || newQuantity >= 0) {
-      onQuantityChange(drink.idDrink, newQuantity);
-    }
+    const newQuantity = value === "" ? undefined : parseInt(value, 10);
+    onQuantityChange(newQuantity);
   };
   return (
     <div>
@@ -50,10 +48,11 @@ const DrinkBox = ({
           <label>
             Q:
             <input
+              name="quantity"
               className="text-black"
               type="number"
               value={quantity !== undefined ? quantity : ""}
-              onChange={handleQuantityChange}
+              onChange={handleQuantityBlur}
               min="0"
               style={{ width: "50px", margin: "5px" }}
             />

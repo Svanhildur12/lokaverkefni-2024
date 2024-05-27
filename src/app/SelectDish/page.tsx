@@ -8,7 +8,7 @@ const SelectDish = () => {
     <>
       <Header />
       {/* make the "dishes" in navbar highlighted! */}
-      <div className="m-20 text-white text-center font-bold">
+      <div className="m-5 text-white text-center font-bold">
         <RandomDish />{" "}
         {/* Work on the design part here! image and ingredient-box */}
       </div>

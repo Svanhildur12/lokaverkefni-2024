@@ -7,8 +7,8 @@ const SelectDrink = () => {
   return (
     <>
       <Header />
-      {/* make the "dishes" in navbar highlighted! */}
-      <div className="m-20 text-white text-center font-bold">
+      {/* make the "drink" in navbar highlighted! */}
+      <div className="m-5 text-white text-center font-bold">
         <DrinkSelection />
       </div>
     </>
