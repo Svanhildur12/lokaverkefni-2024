@@ -1,18 +1,20 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { DayPicker } from "react-day-picker";
-import TimeSelection from "./TimeSelection";
+import "react-day-picker/dist/style.css";
+import { useReceipt } from "../context/ReceiptContext";
 
 const Calendar = () => {
   const today = new Date();
-  const [selectedDate, setSelectedDate] = useState<Date | undefined>(today);
-
-  useEffect(() => {
-    setSelectedDate(today);
-  }, [today]);
+  const [selectedDate, setSelectedDate] = useState<Date>(today);
+  const { addDate } = useReceipt();
 
   const handleDateSelect = (date: Date | undefined) => {
-    setSelectedDate(date);
+    if (date) {
+      console.log("date picked:", date);
+      setSelectedDate(date);
+      addDate(date);
+    }
   };
 
   return (
@@ -23,17 +25,12 @@ const Calendar = () => {
       <div className="flex justify-center text-white m-5 bg-green-950 rounded-md">
         <DayPicker
           mode="single"
-          selected={selectedDate}
-          onSelect={handleDateSelect}
           fromDate={today}
+          onDayClick={handleDateSelect}
+          selected={selectedDate}
           required
         />
       </div>
-      {selectedDate && (
-        <div>
-          <TimeSelection />
-        </div>
-      )}
     </>
   );
 };

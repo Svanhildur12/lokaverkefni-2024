@@ -2,15 +2,17 @@
 import React, { useState } from "react";
 import TimePicker from "react-time-picker";
 import "react-time-picker/dist/TimePicker.css";
-import "react-clock/dist/Clock.css";
+import { useReceipt } from "../context/ReceiptContext";
 
 const TimeSelection = () => {
   const [selectedTime, setSelectedTime] = useState<string | null>(null);
   const [timeError, setTimeError] = useState<string | null>(null);
+  const { addTime } = useReceipt();
 
   const handleTimeChange = (time: string | null) => {
     if (time) {
       const [hours, minutes] = time.split(":").map(Number);
+      console.log("add time;", time);
       if (hours < 16 || hours > 23 || (hours === 23 && minutes > 0)) {
         setTimeError("Please select time from 16:00 - 23:00");
         setSelectedTime(null);
@@ -35,6 +37,9 @@ const TimeSelection = () => {
           value={selectedTime}
           disableClock
           clockIcon={null}
+          clearIcon={null}
+          onSubmit={setSelectedTime}
+          name="time"
         />
       </div>
       {timeError && (

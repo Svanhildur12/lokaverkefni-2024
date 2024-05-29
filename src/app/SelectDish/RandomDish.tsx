@@ -1,7 +1,9 @@
+"use client";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useCart } from "../context/CartContext";
 import SelectDish from "./page";
+import Image from "next/image";
 
 export type Dish = {
   idMeal: string;
@@ -124,11 +126,14 @@ const RandomDish = () => {
     <>
       <div>
         <p>{dish.strMeal}</p>
-        <img
+        <Image
           src={dish.strMealThumb}
           alt="random dish"
           className="border-double border-4 border-green-950"
-        ></img>
+          width={350}
+          height={350}
+          priority
+        />
         <ScrollableComponent />
         <button
           className="bg-white text-black rounded-sm m-2 w-32"

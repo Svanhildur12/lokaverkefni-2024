@@ -7,6 +7,7 @@ import "swiper/css/navigation";
 import "swiper/css/pagination";
 import "swiper/css/scrollbar";
 import "swiper/swiper-bundle.css";
+import Image from "next/image";
 
 const ImageCarousel = () => {
   return (
@@ -22,13 +23,34 @@ const ImageCarousel = () => {
         }}
       >
         <SwiperSlide>
-          <img src="/images/slide1.jpg" alt={"Photo 1"} />
+          <Image
+            className="w-auto h-auto"
+            src="/images/slide1.jpg"
+            alt={"Photo 1"}
+            width={350}
+            height={350}
+            priority
+          />
         </SwiperSlide>
         <SwiperSlide>
-          <img src="/images/slide2.jpg" alt={"photo 2"} />
+          <Image
+            className="w-auto h-auto"
+            src="/images/slide2.jpg"
+            alt={"photo 2"}
+            width={350}
+            height={350}
+            priority
+          />
         </SwiperSlide>
         <SwiperSlide>
-          <img src="/images/slide3.jpg" alt={"photo 3"} />
+          <Image
+            className="w-auto h-auto"
+            src="/images/slide3.jpg"
+            alt={"photo 3"}
+            width={350}
+            height={350}
+            priority
+          />
         </SwiperSlide>
       </Swiper>
     </section>

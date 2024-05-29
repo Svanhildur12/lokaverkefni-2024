@@ -1,7 +1,15 @@
-import React, { useState } from "react";
+"use client";
+import React, { useEffect, useState } from "react";
+import { useReceipt } from "../context/ReceiptContext";
 
 const Counter = () => {
   const [count, setCount] = useState<number>(0);
+  const { addCount } = useReceipt();
+
+  useEffect(() => {
+    console.log("number of guests:", count);
+    addCount(count);
+  }, [count, addCount]);
 
   return (
     <>

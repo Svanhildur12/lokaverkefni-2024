@@ -1,6 +1,7 @@
 "use client";
-import React, { useState } from "react";
+import React from "react";
 import { Drink } from "../SelectDrink/DrinkSelection";
+import Image from "next/image";
 
 type DrinkBoxProps = {
   drink: Drink;
@@ -35,10 +36,13 @@ const DrinkBox = ({
           backgroundColor: "black",
         }}
       >
-        <img
+        <Image
           src={drink.strDrinkThumb}
           alt={drink.strDrink}
           style={{ width: "100%" }}
+          width={50}
+          height={10}
+          priority
         />
         <h1>{drink.strDrink}</h1>
         <p>{drink.strCategory}</p>
