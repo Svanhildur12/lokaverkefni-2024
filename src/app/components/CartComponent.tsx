@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 
 const CartComponent = () => {
   const [email, setEmail] = useState("");
-  const { postOrder, count, date, time } = useCart();
+  const { postOrder, count, date, time, dishes, drinks } = useCart();
   const router = useRouter();
 
   const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -13,12 +13,19 @@ const CartComponent = () => {
   };
   const handleSubmitOrder = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!date && !time) {
-      console.log("Date and Time is required");
+    if (
+      !date ||
+      !time ||
+      count === 0 ||
+      !email ||
+      dishes.length === 0 ||
+      drinks.length === 0
+    ) {
+      console.log("All fields are required");
       return;
     }
     try {
-      await postOrder(email, count, date, time);
+      await postOrder(email, count, date, time, dishes, drinks);
     } catch (error) {
       console.log("Error posting order:", error);
     }

@@ -24,7 +24,9 @@ interface CartContextProps {
     email: string,
     count: number,
     date: Date | null,
-    time: string
+    time: string,
+    dishes: CartItem[],
+    drinks: CartItem[]
   ) => Promise<void>;
 }
 
@@ -47,9 +49,18 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     email: string,
     count: number,
     date: Date | null,
-    time: string
+    time: string,
+    dishes: CartItem[],
+    drinks: CartItem[]
   ) => {
-    if (!date || !time || count === 0 || !email) {
+    if (
+      !date ||
+      !time ||
+      count === 0 ||
+      !email ||
+      dishes.length === 0 ||
+      drinks.length === 0
+    ) {
       throw new Error("Must provide all properties of an order");
     }
     const order = {
@@ -57,9 +68,8 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
       count: count,
       date: date.toISOString(),
       time: time,
-      id: 0,
-      dish: dishes,
-      drink: drinks,
+      dishes: dishes,
+      drinks: drinks,
     };
     const res = await fetch("http://localhost:3001/api/create-order", {
       method: "POST",
@@ -103,6 +113,5 @@ export const useCart = () => {
   if (!context) {
     throw new Error("useCart must be used witin CartProvider");
   }
-  const { dishes, drinks } = context;
-  return { ...context, dishes, drinks };
+  return context;
 };
