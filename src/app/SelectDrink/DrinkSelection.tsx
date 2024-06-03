@@ -28,32 +28,13 @@ export const fetchDrinksById = async (idDrinks: number[]): Promise<Drink[]> => {
   return Promise.all(drinkPromises);
 };
 
-const postDrinks = async (drinks: SelectDrink[]): Promise<any> => {
-  const res = await fetch("https://jsonplaceholder.typicode.com/posts", {
-    //breyta fetchinu þegar þú ert komin með CART!
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(drinks),
-  });
-
-  if (!res.ok) {
-    throw new Error("Failed to post data");
-  }
-
-  const response = await res.json();
-  console.log("posted order", response);
-  return response;
-};
-
 type SelectDrink = {
   drink: Drink;
   quantity: number | undefined;
 };
 
 const DrinksPage = () => {
-  const [drink, setDrink] = useState<Drink[]>([]);
+  const [drink, setDrink] = useState<Drink[]>();
   const [quantity, setQuantity] = useState("");
   const [selectedDrink, setSelectedDrink] = useState<{
     [Key: string]: SelectDrink;
@@ -132,7 +113,6 @@ const DrinksPage = () => {
         });
       });
     }
-    await postDrinks(drinksToPost);
     setSelectedDrink({});
     setQuantity("");
   };

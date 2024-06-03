@@ -2,7 +2,6 @@
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useCart } from "../context/CartContext";
-import SelectDish from "./page";
 import Image from "next/image";
 
 export type Dish = {
@@ -22,46 +21,15 @@ const getRandomDish = async (): Promise<Dish> => {
   return response.meals[0];
 };
 
-const postRandomDish = async (dishes: SelectDish[]): Promise<any> => {
-  const res = await fetch("https://jsonplaceholder.typicode.com/posts", {
-    //breyta fetchinu þegar þú ert komin með CART!
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(dishes),
-  });
-
-  if (!res.ok) {
-    throw new Error("Failed to post data");
-  }
-
-  const response = await res.json();
-  console.log("posted order", response);
-  return response;
-};
-
-type SelectDish = {
-  dish: Dish;
-  quantity: number | undefined;
-};
-
 const RandomDish = () => {
   const [dish, setDish] = useState<Dish | null>(null);
   const [quantity, setQuantity] = useState("");
   const router = useRouter();
   const { addDish } = useCart();
-  const [selectedDish, setSelectedDish] = useState<{
-    [Key: string]: SelectDish;
-  }>({});
 
   useEffect(() => {
     fetchDish();
   }, []);
-
-  useEffect(() => {
-    console.log("current dish:", dish);
-  }, [dish]);
 
   const fetchDish = async () => {
     try {
@@ -83,24 +51,30 @@ const RandomDish = () => {
   const handleAddToCart = async () => {
     if (dish && quantity) {
       const quantityNumber = parseInt(quantity);
+      console.log("adding to cart:", {
+        id: dish.idMeal,
+        quantity: quantityNumber,
+        name: dish.strMeal,
+      });
       if (isNaN(quantityNumber) || quantityNumber <= 0) {
         console.log("invalid quantity");
         return;
       }
-      const selectedDish: SelectDish = { dish, quantity: quantityNumber };
-      console.log("adding to cart:", selectedDish);
-      addDish({
+      const cartItem = {
         id: dish.idMeal,
         name: dish.strMeal,
         image: dish.strMealThumb,
         instructions: dish.strInstructions,
         quantity: quantityNumber,
-      });
-      await postRandomDish([selectedDish]);
-      setSelectedDish({});
+      };
+      addDish(cartItem);
       setQuantity("");
       fetchDish();
     }
+  };
+
+  const handleNextPage = () => {
+    router.push("/SelectDrink");
   };
 
   const ScrollableComponent = () => {
@@ -116,10 +90,6 @@ const RandomDish = () => {
         </div>
       </div>
     );
-  };
-
-  const refreshPage = () => {
-    fetchDish();
   };
 
   return (
@@ -138,7 +108,7 @@ const RandomDish = () => {
         <button
           className="bg-white text-black rounded-sm m-2 w-32"
           type="button"
-          onClick={refreshPage}
+          onClick={fetchDish}
         >
           Generate new
         </button>
@@ -167,10 +137,7 @@ const RandomDish = () => {
             Add To Cart
           </button>
           <div className="mt-2"></div>
-          <button
-            className="text-white text-xl"
-            onClick={() => router.push("/SelectDrink")}
-          >
+          <button className="text-white text-xl" onClick={handleNextPage}>
             next page
           </button>
         </form>

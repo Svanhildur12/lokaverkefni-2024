@@ -2,9 +2,9 @@
 import React from "react";
 import Header from "../components/Header";
 import CalendarComponent from "../components/CalendarComponent";
-import CounterComponent from "../components/CounterComponent";
-import EmailComponent from "../components/EmailComponent";
 import TimeSelection from "../components/TimeSelection";
+import CartComponent from "../components/CartComponent";
+import GuestCounter from "../components/GuestCounter";
 
 const OrderPage = () => {
   return (
@@ -13,8 +13,8 @@ const OrderPage = () => {
       {/* make the "order" in navbar highlighted! */}
       <CalendarComponent />
       <TimeSelection />
-      <CounterComponent />
-      <EmailComponent />
+      <GuestCounter />
+      <CartComponent />
     </>
   );
 };

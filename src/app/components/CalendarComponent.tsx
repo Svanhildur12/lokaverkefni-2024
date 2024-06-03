@@ -1,21 +1,31 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { DayPicker } from "react-day-picker";
 import "react-day-picker/dist/style.css";
-import { useReceipt } from "../context/ReceiptContext";
+import { useCart } from "../context/CartContext";
 
 const Calendar = () => {
   const today = new Date();
-  const [selectedDate, setSelectedDate] = useState<Date>(today);
-  const { addDate } = useReceipt();
+  const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined);
+  const { setDate } = useCart();
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
 
   const handleDateSelect = (date: Date | undefined) => {
     if (date) {
-      console.log("date picked:", date);
+      console.log("date picked:", date.toISOString().split("T")[0]);
       setSelectedDate(date);
-      addDate(date);
+      setDate(date);
+    } else {
+      setSelectedDate(undefined);
+      setDate(null);
     }
   };
+
+  if (!isClient) return null;
 
   return (
     <>
