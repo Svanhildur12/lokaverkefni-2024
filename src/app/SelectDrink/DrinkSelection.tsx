@@ -2,14 +2,16 @@
 import { useState, useEffect } from "react";
 import DrinkBox from "../components/DrinkBoxComponent";
 import { useRouter } from "next/navigation";
-import { useCart } from "../context/CartContext";
+import { CartItem, useCart } from "../context/CartContext";
 
 export type Drink = {
-  idDrink: number;
+  idDrink: string;
   strDrink: string;
   strInstructions: string;
   strDrinkThumb: string;
   strCategory: string;
+  quantity: number;
+  price: number;
 };
 
 export const fetchDrinkById = async (idDrink: number): Promise<Drink> => {
@@ -41,7 +43,8 @@ const DrinksPage = () => {
   }>({});
   const drinksIds = [0, 2, 20, 4, 5, 6];
   const router = useRouter();
-  const { addDrink } = useCart();
+  const [price, setPrice] = useState(0);
+  const { addToCart } = useCart();
 
   useEffect(() => {
     const getDrink = async () => {
@@ -70,7 +73,10 @@ const DrinksPage = () => {
       if (newSelectedDrinks[drink.idDrink]) {
         delete newSelectedDrinks[drink.idDrink];
       } else {
-        newSelectedDrinks[drink.idDrink] = { drink, quantity: undefined };
+        newSelectedDrinks[drink.idDrink] = {
+          drink,
+          quantity: undefined,
+        };
       }
       console.log("update selected drinks:", newSelectedDrinks);
       return newSelectedDrinks;
@@ -78,7 +84,7 @@ const DrinksPage = () => {
   };
 
   const handleQuantityChange = (
-    idDrink: number,
+    idDrink: string,
     quantity: number | undefined
   ) => {
     console.log(
@@ -99,22 +105,22 @@ const DrinksPage = () => {
     );
     if (drinksToPost.length > 0) {
       drinksToPost.forEach(({ drink, quantity }) => {
-        console.log("adding to cart:", {
+        const newCartItem: CartItem = {
           id: drink.idDrink,
-          name: drink.strDrink,
-          quantity,
-        });
-        addDrink({
-          id: drink.idDrink.toString(),
           name: drink.strDrink,
           image: drink.strDrinkThumb,
           instructions: drink.strInstructions,
-          quantity: quantity ?? 0,
-        });
+          category: drink.strCategory,
+          quantity: drink.quantity,
+          price: drink.price,
+        };
+        addToCart(newCartItem);
+        console.log("adding to cart:", newCartItem);
       });
+      setPrice(2500);
+      setSelectedDrink({});
+      setQuantity("");
     }
-    setSelectedDrink({});
-    setQuantity("");
   };
 
   return (
@@ -124,6 +130,7 @@ const DrinksPage = () => {
           <DrinkBox
             key={drink.idDrink}
             drink={drink}
+            price={2500}
             onSelect={handleSelectDrink}
             isSelected={!!selectedDrink[drink.idDrink]}
             quantity={selectedDrink[drink.idDrink]?.quantity}

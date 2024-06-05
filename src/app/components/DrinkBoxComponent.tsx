@@ -9,6 +9,7 @@ type DrinkBoxProps = {
   isSelected: boolean;
   quantity: number | undefined;
   onQuantityChange: (quantity: number | undefined) => void;
+  price: 2500;
 };
 
 const DrinkBox = ({
@@ -17,6 +18,7 @@ const DrinkBox = ({
   isSelected,
   quantity,
   onQuantityChange,
+  price,
 }: DrinkBoxProps) => {
   const handleQuantityBlur = (event: React.FocusEvent<HTMLInputElement>) => {
     const value = event.target.value;
@@ -46,6 +48,7 @@ const DrinkBox = ({
         />
         <h1>{drink.strDrink}</h1>
         <p>{drink.strCategory}</p>
+        <p>{price}kr</p>
       </div>
       {isSelected && (
         <div>

@@ -1,31 +1,49 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
+import { OrderType } from "../api";
 
 const UserInfo = () => {
+  const [showInput, setShowInput] = useState(false);
+
+  const handleShowInput = () => {
+    setShowInput((prevShowInput) => !prevShowInput);
+  };
+
   return (
     <>
-      <div className="flex justify-center m-5">
-        <div className="border-4 border-double border-green-950 rounded-md ml-5 mr-5 w-96 h-36 bg-green-900 bg-opacity-35">
-          <p className="flex justify-center text-white pt-2">Find your order</p>
-          <label className=" text-white pl-2">
-            E-mail
-            <input
-              required
-              id="email"
-              type="text"
-              name="email"
-              autoComplete="email"
-              className="mt-2 ml-2 h-10 w-56 justify-center rounded-md bg-white bg-opacity-50"
-            />
-          </label>
-          <form className="flex justify-center">
+      <div className="mt-10 flex justify-center m-5 md:m-0">
+        <div className="flex justify-center border-8 border-double border-yellow-100 rounded-md ml-5 mr-5 w-96 h-36 md:h-44 bg-green-950 bg-opacity-75">
+          {!showInput && (
             <button
-              type="submit"
-              className="border-2 border-solid rounded-md mt-2 pl-2 pr-2 bg-white border-white text-green-900"
+              onClick={handleShowInput}
+              className=" text-yellow-100 font-bold text-xl md:text-3xl border-2 border-solid w-44 md:w-64 h-10 mt-10 md:mt-14 rounded-md border-yellow-100"
             >
-              FIND
+              Find your order!
             </button>
-          </form>
+          )}
+          {showInput && (
+            <form>
+              <p className="flex justify-center text-yellow-100 font-bold mt-2 md:mt-5 md:text-2xl underline">
+                Enter your Email below
+              </p>
+              <label className="flex justify-center text-yellow-100 font-bold">
+                <input
+                  required
+                  id="email"
+                  type="text"
+                  name="email"
+                  autoComplete="email"
+                  className="mt-2 ml-2 md:ml-0 h-10 w-56 md:w-64 justify-center rounded-md bg-yellow-100 bg-opacity-50"
+                />
+              </label>
+              <button
+                type="submit"
+                className="border-2 border-solid rounded-md bg-yellow-100 border-white text-black font-bold w-16 md:w-24 h-8 m-2"
+              >
+                FIND
+              </button>
+            </form>
+          )}
         </div>
       </div>
     </>

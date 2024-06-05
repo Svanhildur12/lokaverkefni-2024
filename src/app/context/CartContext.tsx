@@ -1,106 +1,72 @@
 "use client";
 import { ReactNode, createContext, useContext, useState } from "react";
 
-interface CartItem {
+export interface DishItems {
+  idMeal: string;
+  strMeal: string;
+  strMealThumb: string;
+  strInstructions: string;
+  strCategory: string;
+  price: number;
+  quantity: number;
+}
+export interface DrinkItems {
+  idDrink: string;
+  strDrink: string;
+  strInstructions: string;
+  strDrinkThumb: string;
+  strCategory: string;
+  quantity: number;
+  price: number;
+}
+
+export interface CartItem {
   id: string;
   name: string;
   image: string;
+  category: string;
   instructions: string;
+  price: number;
   quantity: number;
 }
 
 interface CartContextProps {
-  dishes: CartItem[];
-  drinks: CartItem[];
+  cart: CartItem[];
   date: Date | null;
-  time: string;
-  count: number;
-  addDish: (dish: CartItem) => void;
-  addDrink: (drink: CartItem) => void;
+  time: string | null;
+  guests: number;
+  addToCart: (item: CartItem) => void;
   setDate: (date: Date | null) => void;
-  setTime: (time: string) => void;
-  setCount: (count: number) => void;
-  postOrder: (
-    email: string,
-    count: number,
-    date: Date | null,
-    time: string,
-    dishes: CartItem[],
-    drinks: CartItem[]
-  ) => Promise<void>;
+  setTime: (time: string | null) => void;
+  setGuests: (guests: number) => void;
+  setEmail: (email: string) => void;
 }
 
 const CartContext = createContext<CartContextProps | undefined>(undefined);
 
 export const CartProvider = ({ children }: { children: ReactNode }) => {
-  const [dishes, setDishes] = useState<CartItem[]>([]);
-  const [drinks, setDrinks] = useState<CartItem[]>([]);
+  const [cart, setCart] = useState<CartItem[]>([]);
   const [date, setDate] = useState<Date | null>(null);
-  const [time, setTime] = useState<string>("");
-  const [count, setCount] = useState<number>(0);
+  const [time, setTime] = useState<string | null>("");
+  const [guests, setGuests] = useState<number>(0);
+  const [email, setEmail] = useState<string | null>(null);
 
-  const addDish = (dish: CartItem) => {
-    setDishes((prevDishes) => [...prevDishes, dish]);
-  };
-  const addDrink = (drink: CartItem) => {
-    setDrinks((prevDrinks) => [...prevDrinks, drink]);
-  };
-  const postOrder = async (
-    email: string,
-    count: number,
-    date: Date | null,
-    time: string,
-    dishes: CartItem[],
-    drinks: CartItem[]
-  ) => {
-    if (
-      !date ||
-      !time ||
-      count === 0 ||
-      !email ||
-      dishes.length === 0 ||
-      drinks.length === 0
-    ) {
-      throw new Error("Must provide all properties of an order");
-    }
-    const order = {
-      email: email,
-      count: count,
-      date: date.toISOString(),
-      time: time,
-      dishes: dishes,
-      drinks: drinks,
-    };
-    const res = await fetch("http://localhost:3001/api/create-order", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(order),
-    });
-
-    if (!res.ok) {
-      throw new Error("Failed to post data");
-    }
-
-    const response = await res.json();
-    console.log("posted order", response);
+  const addToCart = (item: CartItem) => {
+    setCart([...cart, item]);
   };
 
   return (
     <CartContext.Provider
       value={{
-        dishes,
-        drinks,
+        cart,
         date,
         time,
-        count,
-        addDish,
-        addDrink,
-        postOrder,
-        setCount,
+        guests,
+        addToCart,
         setDate,
         setTime,
+        setGuests,
+        setEmail,
       }}
     >
       {children}

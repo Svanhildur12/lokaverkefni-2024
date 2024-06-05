@@ -8,6 +8,9 @@ const config: Config = {
   ],
   theme: {
     extend: {
+      colors: {
+        'custom-bullet': '#F6F6D5',
+        'custom-active-bullet': '#3E6053',
       backgroundImage: {
         "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
         "gradient-conic":
@@ -16,5 +19,6 @@ const config: Config = {
     },
   },
   plugins: [],
+},
 };
 export default config;

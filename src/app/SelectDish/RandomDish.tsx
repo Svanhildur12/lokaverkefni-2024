@@ -1,7 +1,7 @@
 "use client";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { useCart } from "../context/CartContext";
+import { CartItem, useCart } from "../context/CartContext";
 import Image from "next/image";
 
 export type Dish = {
@@ -9,6 +9,9 @@ export type Dish = {
   strMeal: string;
   strMealThumb: string;
   strInstructions: string;
+  strCategory: string;
+  price: number;
+  quantity: number;
 };
 
 const getRandomDish = async (): Promise<Dish> => {
@@ -25,7 +28,8 @@ const RandomDish = () => {
   const [dish, setDish] = useState<Dish | null>(null);
   const [quantity, setQuantity] = useState("");
   const router = useRouter();
-  const { addDish } = useCart();
+  const { addToCart } = useCart();
+  const defaultPrice = 2500;
 
   useEffect(() => {
     fetchDish();
@@ -51,25 +55,23 @@ const RandomDish = () => {
   const handleAddToCart = async () => {
     if (dish && quantity) {
       const quantityNumber = parseInt(quantity);
-      console.log("adding to cart:", {
-        id: dish.idMeal,
-        quantity: quantityNumber,
-        name: dish.strMeal,
-      });
       if (isNaN(quantityNumber) || quantityNumber <= 0) {
         console.log("invalid quantity");
         return;
       }
-      const cartItem = {
+      const newCartItem: CartItem = {
         id: dish.idMeal,
         name: dish.strMeal,
         image: dish.strMealThumb,
+        category: dish.strCategory,
         instructions: dish.strInstructions,
+        price: defaultPrice,
         quantity: quantityNumber,
       };
-      addDish(cartItem);
+      addToCart(newCartItem);
       setQuantity("");
       fetchDish();
+      console.log("added to cart:", newCartItem);
     }
   };
 
@@ -85,7 +87,7 @@ const RandomDish = () => {
           overflow: "scroll",
         }}
       >
-        <div className="border-green-950 border-2 border-spacing-x-1 bg-black bg-opacity-75">
+        <div className="border-green-950 border-2 border-spacing-x-1  bg-opacity-75">
           {dish.strInstructions}
         </div>
       </div>
@@ -95,26 +97,27 @@ const RandomDish = () => {
   return (
     <>
       <div>
-        <p>{dish.strMeal}</p>
+        <p className="bg-green-950 rounded-md">{dish.strMeal}</p>
         <Image
           src={dish.strMealThumb}
           alt="random dish"
-          className="border-double border-4 border-green-950"
+          className="border-double border-4 border-green-950 rounded-md"
           width={350}
           height={350}
           priority
         />
         <ScrollableComponent />
         <button
-          className="bg-white text-black rounded-sm m-2 w-32"
+          className="flex justify-start bg-green-950 text-yellow-100 border-2 border-white rounded-md p-2 m-2 w-34"
           type="button"
           onClick={fetchDish}
         >
           Generate new
         </button>
       </div>
-      <div className="m-5">
+      <div className="flex justify-end">
         <form
+          className=""
           id="auto"
           name="auto"
           onSubmit={(e) => {
@@ -122,17 +125,22 @@ const RandomDish = () => {
             handleAddToCart();
           }}
         >
-          <label>
-            Quantity
+          <label className="flex justify-start rounded-md bg-yellow-100 text-black ">
+            Quantity:
             <input
-              className="text-black"
+              className="rounded-md text-black bg-yellow-100 w-10 h-5"
               id="number"
               type="number"
               value={quantity}
               onChange={handleQuantityChange}
             />
           </label>
-          <button type="submit" value="" className="">
+          <label>Price pr.meal: {defaultPrice}kr</label>
+          <button
+            type="submit"
+            value=""
+            className="bg-yellow-100 text-black font-bold rounded-md mt-5"
+          >
             {" "}
             Add To Cart
           </button>

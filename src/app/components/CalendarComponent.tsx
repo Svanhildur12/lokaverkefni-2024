@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { DayPicker } from "react-day-picker";
 import "react-day-picker/dist/style.css";
 import { useCart } from "../context/CartContext";
@@ -8,11 +8,6 @@ const Calendar = () => {
   const today = new Date();
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined);
   const { setDate } = useCart();
-  const [isClient, setIsClient] = useState(false);
-
-  useEffect(() => {
-    setIsClient(true);
-  }, []);
 
   const handleDateSelect = (date: Date | undefined) => {
     if (date) {
@@ -24,8 +19,6 @@ const Calendar = () => {
       setDate(null);
     }
   };
-
-  if (!isClient) return null;
 
   return (
     <>

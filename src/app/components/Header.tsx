@@ -3,20 +3,20 @@ import React from "react";
 
 const Header = () => {
   return (
-    <div className="top-0 left-0 w-full z-10">
-      <div className="relative bg-green-950 backdrop-filter px-4  rounded-lg text-white mx-4 lg:mx-24  mt-4">
-        <div className="flex flex-row gap-5 items-center">
-          <div className="flex flex-row items-center gap-10">
+    <div className="top-0 left-0 w-full z-[20]">
+      <div className="sticky bg-green-950 max-w-screen px-4 lg:px-6 text-yellow-100 border-b-4 border-yellow-100">
+        <div className="flex justify-around gap-2 lg:gap-14 items-center h-20 lg:h-28">
+          <div className="flex flex-row">
             <img
               src="/images/lil-bits.svg"
               alt="logo"
-              className="w-16 pt-1 pb-1"
+              className="w-32 h-32 lg:w-52"
             />
           </div>
-          <p className="flex items-center text-sm">Dishes</p>
-          <p className="flex items-center text-sm">Drinks</p>
-          <p className="flex items-center text-sm">Order</p>
-          <p className="flex items-center text-sm">Receipt</p>
+          <p className="flex items-center text-sm lg:text-4xl ">Dishes</p>
+          <p className="flex items-center text-sm lg:text-4xl">Drinks</p>
+          <p className="flex items-center text-sm lg:text-4xl">Order</p>
+          <p className="flex items-center text-sm lg:text-4xl">Receipt</p>
         </div>
       </div>
     </div>

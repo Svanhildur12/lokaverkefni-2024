@@ -18,7 +18,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`bg-[url('/images/food.webp')] bg-no-repeat bg-left bg-fixed bg-cover ${inter.className}`}
+        className={`bg-[url('/images/vintage.jpg')] bg-no-repeat bg-left bg-fixed xl:bg-current bg-cover ${inter.className}`}
       >
         <CartProvider>{children}</CartProvider>
       </body>
