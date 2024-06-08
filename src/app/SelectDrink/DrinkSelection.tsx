@@ -125,7 +125,7 @@ const DrinksPage = () => {
 
   return (
     <div>
-      <div className="flex flex-wrap">
+      <div className="flex flex-wrap ml-1 mt-10 md:flex md:justify-center md:ml-0">
         {drink.map((drink) => (
           <DrinkBox
             key={drink.idDrink}
@@ -140,25 +140,32 @@ const DrinksPage = () => {
           />
         ))}
       </div>
-      <div>
-        <h2>Selected Drinks</h2>
+      <div className="">
+        <h2 className="text-yellow-100 bg-green-950 mt-5 mx-20 border-2 border-white text-xl md:text-2xl md:mx-64 lg:text-3xl">
+          Selected Drinks:
+        </h2>
         {Object.values(selectedDrink).map(({ drink, quantity }) => (
           <div key={drink.idDrink}>
-            <p>
+            <p className="bg-green-950 text-yellow-100 border-2 mx-20 border-white md:text-2xl md:mx-64 lg:text-3xl">
               {drink.strDrink} - Q: {quantity ?? ""}
             </p>
           </div>
         ))}
-        <button onClick={handleAddToCart} value="" type="submit" className="">
+        <button
+          onClick={handleAddToCart}
+          value=""
+          type="submit"
+          className="bg-yellow-100 text-black font-bold rounded-md mt-5 md:text-2xl md:w-44 lg:text-3xl"
+        >
           {" "}
           Add To Cart
         </button>
         <div className="mt-2"></div>
         <button
-          className="text-white text-xl"
+          className="text-yellow-100 text-xl md:text-2xl border-2 rounded-md p-2 bg-green-950 lg:text-3xl lg:mb-32"
           onClick={() => router.push("/OrderPage")}
         >
-          next page
+          Next page
         </button>
       </div>
     </div>

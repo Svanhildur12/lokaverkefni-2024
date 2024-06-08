@@ -40,6 +40,7 @@ interface CartContextProps {
   setTime: (time: string | null) => void;
   setGuests: (guests: number) => void;
   setEmail: (email: string) => void;
+  submitOrder: () => Promise<void>;
 }
 
 const CartContext = createContext<CartContextProps | undefined>(undefined);
@@ -54,6 +55,35 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   const addToCart = (item: CartItem) => {
     setCart([...cart, item]);
   };
+  const submitOrder = async () => {
+    if (!email) {
+      console.log("Email is required");
+      return;
+    }
+    const order = {
+      cart,
+      date,
+      time,
+      guests,
+      email,
+    };
+    try {
+      const response = await fetch("http://localhost:3001/api/create-order", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(order),
+      });
+      if (!response.ok) {
+        throw new Error("Failed to submit order");
+      }
+      const data = await response.json();
+      console.log("Order submitted successfully", data);
+    } catch (error) {
+      console.error("Error submitting order:", error);
+    }
+  };
 
   return (
     <CartContext.Provider
@@ -67,6 +97,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
         setTime,
         setGuests,
         setEmail,
+        submitOrder,
       }}
     >
       {children}

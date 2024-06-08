@@ -5,15 +5,18 @@ import ImageCarousel from "./HomePage/ImageCarousel";
 import OrderBox from "./HomePage/OrderBox";
 import UserInfo from "./HomePage/UserInfo";
 import SpecialOffer from "./HomePage/SpecialOffer";
+import { CartProvider } from "./context/CartContext";
 
 export default function Home() {
   return (
     <>
-      <Header />
-      <ImageCarousel />
-      <OrderBox />
-      <UserInfo />
-      <SpecialOffer />
+      <CartProvider>
+        <Header />
+        <ImageCarousel />
+        <OrderBox />
+        <UserInfo />
+        <SpecialOffer />
+      </CartProvider>
     </>
   );
 }

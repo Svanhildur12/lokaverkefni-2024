@@ -13,7 +13,7 @@ import "../globals.css";
 
 const ImageCarousel = () => {
   return (
-    <section className="mt-5 md:mt-20 pl-10 md:pl-20 lg:mt-10 lg:px-5 pr-10 md:pr-20 pt-5 pb-5">
+    <section className="mt-5 md:mt-20 pl-10 md:pl-20 lg:mt-10 lg:px-5 pr-10 md:pr-20 pt-5 pb-5 lg:mx-96">
       <Swiper
         modules={[Pagination]}
         pagination={{ type: "bullets" }}
@@ -22,17 +22,17 @@ const ImageCarousel = () => {
         <SwiperSlide>
           <Image
             className="w-fill h-fill  md:w-full"
-            src="/images/slide1.jpg"
+            src="/images/plate1.jpg"
             alt={"Photo 1"}
-            width={4000}
-            height={4000}
+            width={5000}
+            height={5000}
             priority
           />
         </SwiperSlide>
         <SwiperSlide>
           <Image
             className="w-fill h-fill  md:w-full"
-            src="/images/slide2.jpg"
+            src="/images/plate2.jpg"
             alt={"photo 2"}
             width={4000}
             height={4000}
@@ -42,7 +42,7 @@ const ImageCarousel = () => {
         <SwiperSlide>
           <Image
             className="w-fill h-fill  md:w-full"
-            src="/images/slide3.jpg"
+            src="/images/bolognese.jpg"
             alt={"photo 3"}
             width={4000}
             height={4000}

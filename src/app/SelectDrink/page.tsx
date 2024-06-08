@@ -8,7 +8,7 @@ const SelectDrink = () => {
     <>
       <Header />
       {/* make the "drink" in navbar highlighted! */}
-      <div className="m-5 text-white text-center font-bold">
+      <div className=" text-white text-center font-bold md:flex md:justify-center lg:flex lg:justify-between lg:mx-96">
         <DrinkSelection />
       </div>
     </>

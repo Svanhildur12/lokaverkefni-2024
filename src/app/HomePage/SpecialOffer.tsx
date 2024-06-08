@@ -15,7 +15,7 @@ const SpecialOffer = () => {
           height={100}
         />
       </div>
-      <p className="text-center text-white font-bold bg-black mb-10 md:text-3xl md:mb-15">
+      <p className="text-center text-white font-bold bg-black mb-10 md:text-3xl md:mb-15 lg:text-4xl lg:mx-96">
         HAPPY HOUR EVERY DAY FROM 17:00-19:00
       </p>
     </div>

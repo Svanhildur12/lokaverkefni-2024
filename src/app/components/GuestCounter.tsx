@@ -13,12 +13,12 @@ const GuestCounter = () => {
 
   return (
     <>
-      <div className="text-center text-white font-bold">
+      <div className="text-center text-yellow-100 underline font-bold md:text-2xl mt-5 md:mt-14 lg:text-4xl">
         <p>Please select number of people</p>
       </div>
-      <div className="flex justify-center text-4xl m-5 gap-2 bg-black rounded-md ml-20 mr-20">
+      <div className="flex justify-center text-4xl md:text-6xl m-5 gap-2 rounded-md">
         <button
-          className=" text-green-500 font-bold text-3xl"
+          className=" text-green-500 font-bold text-3xl md:text-4xl"
           onClick={() => setCount(count + 1)}
         >
           +
@@ -32,7 +32,7 @@ const GuestCounter = () => {
         </button>
         <div>
           <button
-            className="text-white border-2 rounded-sm bg-green-950 text-sm border-white flex justify-end mt-2 font-bold"
+            className="text-green-950 border-2 rounded-md p-1 bg-yellow-100 text-sm border-white flex justify-end mt-2 font-bold md:text-4xl"
             onClick={handleSubmit}
           >
             Submit
