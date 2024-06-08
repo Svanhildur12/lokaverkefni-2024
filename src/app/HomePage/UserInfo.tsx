@@ -1,6 +1,5 @@
 "use client";
 import React, { useState } from "react";
-import { OrderType } from "../api";
 
 const UserInfo = () => {
   const [showInput, setShowInput] = useState(false);
@@ -11,22 +10,22 @@ const UserInfo = () => {
 
   return (
     <>
-      <div className="mt-10 flex justify-center m-5 md:m-0">
-        <div className="flex justify-center border-8 border-double border-yellow-100 rounded-md ml-5 mr-5 w-96 h-36 md:h-44 bg-green-950 bg-opacity-75">
+      <div className="flex justify-center m-5 md:m-0 lg:mx-72">
+        <div className="flex justify-center border-8 border-double border-yellow-100 rounded-md ml-5 mr-5 w-96 h-36 md:h-44 lg:h-64 md:w-full lg:w-full lg:pt-8 md:mx-32 bg-green-950 bg-opacity-75">
           {!showInput && (
             <button
               onClick={handleShowInput}
-              className=" text-yellow-100 font-bold text-xl md:text-3xl border-2 border-solid w-44 md:w-64 h-10 mt-10 md:mt-14 rounded-md border-yellow-100"
+              className=" text-yellow-100 font-bold text-xl md:text-3xl lg:text-4xl border-2 border-solid w-44 md:w-64 lg:w-96 h-10 mt-10 md:mt-14 rounded-md border-yellow-100"
             >
               Find your order!
             </button>
           )}
           {showInput && (
             <form>
-              <p className="flex justify-center text-yellow-100 font-bold mt-2 md:mt-5 md:text-2xl underline">
+              <p className="flex justify-center text-yellow-100 font-bold mt-2 md:mt-5 md:text-2xl md:mb-5 lg:text-4xl underline">
                 Enter your Email below
               </p>
-              <label className="flex justify-center text-yellow-100 font-bold">
+              <label>
                 <input
                   required
                   id="email"
@@ -38,7 +37,7 @@ const UserInfo = () => {
               </label>
               <button
                 type="submit"
-                className="border-2 border-solid rounded-md bg-yellow-100 border-white text-black font-bold w-16 md:w-24 h-8 m-2"
+                className="border-2 border-solid rounded-md bg-yellow-100 border-white text-black font-bold w-16 md:w-24 lg:h-10 h-8 m-2"
               >
                 FIND
               </button>
