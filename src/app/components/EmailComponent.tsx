@@ -1,56 +1,46 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useCart } from "../context/CartContext";
 import { useRouter } from "next/navigation";
-import { OrderType, api } from "../api";
+import { OrderType, api, getOrderByEmail, postOrder } from "../api";
+import { test } from "node:test";
 
 const EmailComponent = () => {
   const [emailInput, setEmailInput] = useState<string>("");
-  const { setEmail, submitOrder } = useCart();
+  const { setEmail, submitOrder, cart, date, time, guests } = useCart();
   const router = useRouter();
-  const [order, setOrder] = useState<OrderType[]>([]);
-
-  const fetchOrder = async () => {
-    const fetchOrder = await api.getOrders();
-    setOrder(fetchOrder);
-  };
-  useEffect(() => {
-    fetchOrder();
-  }, []);
-
-  if (!order) {
-    return <p>Loading...</p>;
-  }
-
-  const handleOrderSubmit = async () => {
-    if (emailInput && order) {
-      await api.postOrder({
-        id: 0,
-        count: 0,
-        email: "",
-        dish: {
-          idMeal: "",
-          strMeal: "",
-          strMealThumb: "",
-          strInstructions: "",
-          strCategory: "",
-          price: 0,
-          quantity: 0,
-        },
-        drinks: [],
-        date: "",
-        time: "",
-      });
-      setOrder(order);
-    }
-  };
+  const [order, setOrder] = useState<OrderType>();
 
   const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setEmailInput(e.target.value);
   };
 
-  const handleNextPage = () => {
-    router.push("/ReceiptPage");
+  const handleOrderSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (emailInput.trim() === "") {
+      console.error("Email is required.");
+      return;
+    }
+    setEmail(emailInput);
+
+    if (order) {
+      console.log("test", order);
+      try {
+        await postOrder(order);
+        console.log("Order Posted:", order);
+
+        const fetchedOrder = await getOrderByEmail(emailInput);
+        setOrder(fetchedOrder);
+        console.log("Fetched Order after Post:", fetchedOrder);
+
+        router.push("/ReceiptPage");
+      } catch (error) {
+        console.error("Error submitting order:", error);
+      }
+    }
+    if (!order) {
+      return <p>Loading...</p>;
+    }
   };
 
   return (
@@ -72,17 +62,11 @@ const EmailComponent = () => {
               onChange={handleEmailChange}
             />
             <button
-              className="border-2 border-solid rounded-md mt-2 font-bold md:text-2xl lg:text-3xl bg-yellow-100 border-white text-green-900"
-              type="submit"
+              className="text-yellow-100 text-xl md:text-2xl md:mb-10 lg:text-3xl lg:mb-32 border-2 rounded-md p-2 bg-green-950 mt-5 mb-5"
               onClick={handleOrderSubmit}
+              type="submit"
             >
               ORDER
-            </button>
-            <button
-              className="text-yellow-100 text-xl md:text-2xl md:mb-10 lg:text-3xl lg:mb-32 border-2 rounded-md p-2 bg-green-950 mt-5 mb-5"
-              onClick={handleNextPage}
-            >
-              Next page
             </button>
           </div>
         </div>

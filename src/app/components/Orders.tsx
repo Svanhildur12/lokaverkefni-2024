@@ -4,8 +4,6 @@ import { OrderType, api } from "../api";
 import { useCart } from "../context/CartContext";
 
 const Order = ({ order }: { order: OrderType }) => {
-  const { toggleDelete, value } = useCart();
-
   const contextValue = true;
   return (
     <p key={order.id}>

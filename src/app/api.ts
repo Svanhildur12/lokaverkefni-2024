@@ -24,8 +24,8 @@ export type OrderType = {
   drinks: Drink[];
   count: number;
   date: string;
-  time: string;
 };
+
 
 const getOrders = async (): Promise<OrderType[]> => {
   const res = await fetch("http://localhost:3001/api/orders");
@@ -40,6 +40,7 @@ const getOrders = async (): Promise<OrderType[]> => {
 };
 
 export const postOrder = async (order: OrderType): Promise<OrderType> => {
+  console.log("order", order)
   const res = await fetch("http://localhost:3001/api/create-order", {
     method: "POST",
     headers: {
@@ -104,8 +105,6 @@ const deleteOrder = async (id: number): Promise<OrderType> => {
   console.log(response)
   return response
 }
-
-
 export const api = {
   getOrders,
   postOrder,

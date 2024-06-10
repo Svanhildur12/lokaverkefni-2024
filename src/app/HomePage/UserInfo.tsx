@@ -1,6 +1,6 @@
 "use client";
 import React, { useState } from "react";
-import { getOrderByEmail } from "../api";
+import { api, getOrderByEmail } from "../api";
 import { useRouter } from "next/navigation";
 
 const UserInfo = () => {
@@ -22,7 +22,7 @@ const UserInfo = () => {
       return;
     }
     try {
-      await getOrderByEmail(emailInput);
+      await api.getOrderByEmail(emailInput);
       router.push("/ReceiptPage");
     } catch (error) {
       console.error("Error retriving order:", error);
