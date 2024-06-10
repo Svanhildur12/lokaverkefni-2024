@@ -20,14 +20,14 @@ export type Drink = {
 export type OrderType = {
   id: number;
   email: string;
-  dish: Dish[];
+  dish: Dish;
   drinks: Drink[];
   count: number;
-  date: Date;
-  time: number;
+  date: string;
+  time: string;
 };
 
-const getOrder = async (): Promise<OrderType[]> => {
+const getOrders = async (): Promise<OrderType[]> => {
   const res = await fetch("http://localhost:3001/api/orders");
 
   if (!res.ok) {
@@ -39,7 +39,7 @@ const getOrder = async (): Promise<OrderType[]> => {
   return response;
 };
 
-const postOrder = async (order: OrderType): Promise<OrderType> => {
+export const postOrder = async (order: OrderType): Promise<OrderType> => {
   const res = await fetch("http://localhost:3001/api/create-order", {
     method: "POST",
     headers: {
@@ -57,7 +57,59 @@ const postOrder = async (order: OrderType): Promise<OrderType> => {
   return response;
 };
 
-export const api = {
-  getOrder,
-  postOrder,
+export const getOrderByEmail = async (email: string): Promise<OrderType> => {
+    const res = await fetch(`http://localhost:3001/api/order/${email}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    if (!res.ok) {
+      throw new Error("Could not find order with email");
+      }
+      const response = await res.json()
+      console.log(response)
+      return response;
+}
+const putUpdateOrder =async (order: OrderType): Promise<OrderType> => {
+  const res = await fetch("http://localhost:3001/api/update-order", {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(order),
+  });
+
+  if (!res.ok) {
+    throw new Error("Email does not exist, cannot update");
+  }
+
+  const response = await res.json();
+  console.log(response);
+  return response;
 };
+const deleteOrder = async (id: number): Promise<OrderType> => {
+  const res = await fetch(`http://localhost:3001/api/order/${id}"`, {
+    method: 'DELETE',
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  })
+
+  if (!res.ok) {
+    throw new Error('Could not find order with id')
+  }
+
+  const response = await res.json()
+  console.log(response)
+  return response
+}
+
+
+export const api = {
+  getOrders,
+  postOrder,
+  getOrderByEmail,
+  putUpdateOrder,
+  deleteOrder
+}

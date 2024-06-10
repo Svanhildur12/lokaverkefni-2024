@@ -8,7 +8,7 @@ type DrinkBoxProps = {
   onSelect: (drink: Drink) => void;
   isSelected: boolean;
   quantity: number | undefined;
-  onQuantityChange: (quantity: number | undefined) => void;
+  onQuantityChange: (quantity: number) => void;
   price: 2500;
 };
 
@@ -23,7 +23,7 @@ const DrinkBox = ({
   const handleQuantityBlur = (event: React.FocusEvent<HTMLInputElement>) => {
     const value = event.target.value;
     const newQuantity = value === "" ? undefined : parseInt(value, 10);
-    onQuantityChange(newQuantity);
+    onQuantityChange(newQuantity || 0);
   };
   return (
     <div className="flex justify-center md:w-52 lg:w-96">

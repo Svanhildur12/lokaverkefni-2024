@@ -37,14 +37,13 @@ type SelectDrink = {
 
 const DrinksPage = () => {
   const [drink, setDrink] = useState<Drink[]>();
-  const [quantity, setQuantity] = useState("");
   const [selectedDrink, setSelectedDrink] = useState<{
     [Key: string]: SelectDrink;
   }>({});
   const drinksIds = [0, 2, 20, 4, 5, 6];
   const router = useRouter();
-  const [price, setPrice] = useState(0);
   const { addToCart } = useCart();
+  const defaultPrice = 2500;
 
   useEffect(() => {
     const getDrink = async () => {
@@ -83,10 +82,7 @@ const DrinksPage = () => {
     });
   };
 
-  const handleQuantityChange = (
-    idDrink: string,
-    quantity: number | undefined
-  ) => {
+  const handleQuantityChange = (idDrink: string, quantity: number) => {
     console.log(
       "quantity change for drink ID:",
       idDrink,
@@ -111,15 +107,13 @@ const DrinksPage = () => {
           image: drink.strDrinkThumb,
           instructions: drink.strInstructions,
           category: drink.strCategory,
-          quantity: drink.quantity,
-          price: drink.price,
+          quantity: quantity ?? 1,
+          price: defaultPrice,
         };
         addToCart(newCartItem);
         console.log("adding to cart:", newCartItem);
       });
-      setPrice(2500);
       setSelectedDrink({});
-      setQuantity("");
     }
   };
 
@@ -162,7 +156,7 @@ const DrinksPage = () => {
         </button>
         <div className="mt-2"></div>
         <button
-          className="text-yellow-100 text-xl md:text-2xl border-2 rounded-md p-2 bg-green-950 lg:text-3xl lg:mb-32"
+          className="text-yellow-100 text-xl md:text-2xl md:mb-10 border-2 rounded-md p-2 bg-green-950 lg:text-3xl lg:mb-32"
           onClick={() => router.push("/OrderPage")}
         >
           Next page

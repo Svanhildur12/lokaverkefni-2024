@@ -1,14 +1,19 @@
 "use client";
 import React from "react";
 import Header from "../components/Header";
-import ReceiptComponent from "../components/ReceiptComponent";
+import CartComponent from "../components/CartComponent";
+import { CartProvider } from "../context/CartContext";
+import Orders from "../components/Orders";
 
 const ReceiptPage = () => {
   return (
     <>
-      <Header />
-      {/* make the "Receipt" in navbar highlighted! */}
-      <ReceiptComponent />
+      <CartProvider>
+        <Header />
+        {/* make the "Receipt" in navbar highlighted! */}
+        <CartComponent />
+        {/*  <Orders /> */}
+      </CartProvider>
     </>
   );
 };

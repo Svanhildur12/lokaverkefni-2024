@@ -1,11 +1,32 @@
 "use client";
 import React, { useState } from "react";
+import { getOrderByEmail } from "../api";
+import { useRouter } from "next/navigation";
 
 const UserInfo = () => {
   const [showInput, setShowInput] = useState(false);
+  const [emailInput, setEmailInput] = useState<string>("");
+  const router = useRouter();
 
   const handleShowInput = () => {
     setShowInput((prevShowInput) => !prevShowInput);
+  };
+  const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setEmailInput(e.target.value);
+  };
+
+  const handleRetriveOrder = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (emailInput.trim() === "") {
+      console.log("Email is required to retrive order");
+      return;
+    }
+    try {
+      await getOrderByEmail(emailInput);
+      router.push("/ReceiptPage");
+    } catch (error) {
+      console.error("Error retriving order:", error);
+    }
   };
 
   return (
@@ -21,7 +42,7 @@ const UserInfo = () => {
             </button>
           )}
           {showInput && (
-            <form>
+            <form onSubmit={handleRetriveOrder}>
               <p className="flex justify-center text-yellow-100 font-bold mt-2 md:mt-5 md:text-2xl md:mb-5 lg:text-4xl underline">
                 Enter your Email below
               </p>
@@ -33,6 +54,8 @@ const UserInfo = () => {
                   name="email"
                   autoComplete="email"
                   className="mt-2 ml-2 md:ml-0 h-10 w-56 md:w-64 justify-center rounded-md bg-yellow-100 bg-opacity-50"
+                  value={emailInput}
+                  onChange={handleEmailChange}
                 />
               </label>
               <button

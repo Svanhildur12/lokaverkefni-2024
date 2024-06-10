@@ -32,12 +32,12 @@ const TimeSelection = () => {
   return (
     <>
       <div className="lg:flex lg:justify-center">
-        <p className="flex justify-center md:flex md:justify-start text-yellow-100 border-solid border-white mx-24 md:mx-48 md:h-20 border-4 mt-10 md:text-2xl underline font-bold text-xl bg-green-950 md:pt-5 md:pl-20 lg:w-72 lg:text-left lg:pt-5 lg:pl-1">
+        <p className="flex justify-center md:flex md:justify-start text-yellow-100 border-solid border-white mx-24 md:mx-48 md:h-20 border-4 mt-10 md:text-2xl underline font-bold text-xl bg-green-950 md:pt-5 md:pl-10 lg:w-72 lg:text-left lg:pt-5 lg:pl-1">
           Pick a time
         </p>
       </div>
       <div className="lg:flex lg:justify-center ">
-        <div className="flex justify-center md:ml-32 md:-mt-16 text-yellow-100 underline font-bold md:text-2xl text-xl lg:h-10 lg:pt-1">
+        <div className="flex justify-center md:ml-24 md:-mt-16 text-yellow-100 underline font-bold md:text-2xl text-xl lg:h-10 lg:pt-1">
           <TimePicker
             className="border-4"
             onChange={handleTimeChange}
