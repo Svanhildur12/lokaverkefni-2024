@@ -1,24 +1,5 @@
 "use client";
-import { ReactNode, createContext, useContext, useState } from "react";
-
-export interface DishItems {
-  idMeal: string;
-  strMeal: string;
-  strMealThumb: string;
-  strInstructions: string;
-  strCategory: string;
-  price: number;
-  quantity: number;
-}
-export interface DrinkItems {
-  idDrink: string;
-  strDrink: string;
-  strInstructions: string;
-  strDrinkThumb: string;
-  strCategory: string;
-  quantity: number;
-  price: number;
-}
+import { ReactNode, createContext, useContext } from "react";
 
 export interface CartItem {
   id: string;
@@ -28,76 +9,68 @@ export interface CartItem {
   instructions: string;
   price: number;
   quantity: number;
+  idMeal?: string;
+  idDrink?: string;
+  strMeal?: string;
+  strDrink?: string;
+  strMealThumb?: string;
+  strDrinkThumb?: string;
+  strInstructions?: string;
+  strCategory?: string;
 }
 
-interface CartContextProps {
+export type CartContextType = {
   cart: CartItem[];
   date: Date | null;
   time: string | null;
   guests: number;
+  email: string | null;
   addToCart: (item: CartItem) => void;
+  setQuantity: (id: string, quantity: number) => void;
   setDate: (date: Date | null) => void;
   setTime: (time: string | null) => void;
   setGuests: (guests: number) => void;
   setEmail: (email: string) => void;
-  submitOrder: () => Promise<void>;
-}
+  toggleDelete: () => void;
+  value: boolean;
+  submitOrder: (order: CartItem) => Promise<void>;
+};
 
-const CartContext = createContext<CartContextProps | undefined>(undefined);
+export const CartContext = createContext<CartContextType>({
+  cart: [],
+  date: new Date(),
+  time: "",
+  guests: 0,
+  email: "",
+  addToCart: (item: CartItem) => {},
+  setQuantity: (id: string, quantity: number) => {},
+  setDate: (date: Date | null) => {},
+  setTime: (time: string | null) => {},
+  setGuests: (guests: number) => {},
+  setEmail: (email: string) => {},
+  toggleDelete: () => {},
+  value: false,
+  submitOrder: async () => {},
+});
 
 export const CartProvider = ({ children }: { children: ReactNode }) => {
-  const [cart, setCart] = useState<CartItem[]>([]);
-  const [date, setDate] = useState<Date | null>(null);
-  const [time, setTime] = useState<string | null>("");
-  const [guests, setGuests] = useState<number>(0);
-  const [email, setEmail] = useState<string | null>(null);
-
-  const addToCart = (item: CartItem) => {
-    setCart([...cart, item]);
-  };
-  const submitOrder = async () => {
-    if (!email) {
-      console.log("Email is required");
-      return;
-    }
-    const order = {
-      cart,
-      date,
-      time,
-      guests,
-      email,
-    };
-    try {
-      const response = await fetch("http://localhost:3001/api/create-order", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(order),
-      });
-      if (!response.ok) {
-        throw new Error("Failed to submit order");
-      }
-      const data = await response.json();
-      console.log("Order submitted successfully", data);
-    } catch (error) {
-      console.error("Error submitting order:", error);
-    }
-  };
-
   return (
     <CartContext.Provider
       value={{
-        cart,
-        date,
-        time,
-        guests,
-        addToCart,
-        setDate,
-        setTime,
-        setGuests,
-        setEmail,
-        submitOrder,
+        cart: [],
+        date: new Date(),
+        time: "",
+        guests: 0,
+        email: "",
+        addToCart: (item: CartItem) => {},
+        setQuantity: (id: string, quantity: number) => {},
+        setDate: (date: Date | null) => {},
+        setTime: (time: string | null) => {},
+        setGuests: (guests: number) => {},
+        setEmail: (email: string) => {},
+        toggleDelete: () => {},
+        value: false,
+        submitOrder: async () => {},
       }}
     >
       {children}
