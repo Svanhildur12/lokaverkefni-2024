@@ -31,9 +31,7 @@ export type CartContextType = {
   setTime: (time: string | null) => void;
   setGuests: (guests: number) => void;
   setEmail: (email: string) => void;
-  toggleDelete: () => void;
-  value: boolean;
-  submitOrder: (order: CartItem) => Promise<void>;
+  submitOrder: (item: CartItem) => Promise<void>;
 };
 
 export const CartContext = createContext<CartContextType>({
@@ -48,9 +46,7 @@ export const CartContext = createContext<CartContextType>({
   setTime: (time: string | null) => {},
   setGuests: (guests: number) => {},
   setEmail: (email: string) => {},
-  toggleDelete: () => {},
-  value: false,
-  submitOrder: async () => {},
+  submitOrder: async (item: CartItem) => {},
 });
 
 export const CartProvider = ({ children }: { children: ReactNode }) => {
@@ -68,9 +64,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
         setTime: (time: string | null) => {},
         setGuests: (guests: number) => {},
         setEmail: (email: string) => {},
-        toggleDelete: () => {},
-        value: false,
-        submitOrder: async () => {},
+        submitOrder: async (item: CartItem) => {},
       }}
     >
       {children}
