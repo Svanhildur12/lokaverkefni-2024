@@ -4,21 +4,21 @@ import { useCallback, useEffect, useState } from "react";
 import Image from "next/image";
 import { OrderType, api } from "../api";
 
-const CartComponent = () => {
+const Orders = () => {
   const { cart, setQuantity, date, time, guests, email } = useCart();
   const [totalPrice, setTotalPrice] = useState<number>(0);
-  const [order, setOrder] = useState<OrderType[]>([]);
+  const [orders, setOrders] = useState<OrderType[]>([]);
 
   const fetchOrder = useCallback(async () => {
     const fetchOrders = await api.getOrders();
-    setOrder(fetchOrders);
+    setOrders(fetchOrders);
   }, []);
 
   useEffect(() => {
     fetchOrder();
   }, [fetchOrder]);
 
-  if (!order) {
+  if (!orders) {
     return <p>Loading...</p>;
   }
 
@@ -46,35 +46,35 @@ const CartComponent = () => {
           </h2>
         </div>
         <div className="mx-2">
-          {cart.length === 0 ? (
+          {orders.length === 0 ? (
             <p className="flex justify-center text-white underline text-3xl font-bold bg-red-600">
               Your cart is empty
             </p>
           ) : (
             <div className="">
-              {cart.map((item) => (
+              {orders.map((order) => (
                 <div
-                  key={item.id}
+                  key={order.id}
                   className="flex items-center justify-between mb-4"
                 >
                   <Image
-                    src={item.image}
-                    alt={item.name}
+                    src={order.image}
+                    alt={order.name}
                     width={100}
                     height={100}
                   />
                   <div className="flex-1 ml-4">
                     <h3 className="text-xl font-semibold text-yellow-100 underline">
-                      {item.name}
+                      {order.name}
                     </h3>
                     <div className="flex items-center mt-2">
                       <label className="mr-2 text-white">Quantity:</label>
                       <input
                         type="number"
-                        value={item.quantity}
+                        value={order.quantity}
                         onChange={(e) =>
                           handleQuantityChange(
-                            item.id,
+                            order.id,
                             parseInt(e.target.value)
                           )
                         }
@@ -85,7 +85,7 @@ const CartComponent = () => {
                   </div>
                   <div className="flex items-center">
                     <p className="text-xl font-semibold text-white bg-black">
-                      {item.price * item.quantity}kr
+                      {order.price * order.quantity}kr
                     </p>
                   </div>
                 </div>
@@ -129,4 +129,4 @@ const CartComponent = () => {
   );
 };
 
-export default CartComponent;
+export default Orders;

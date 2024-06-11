@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import DrinkBox from "../components/DrinkBoxComponent";
 import { useRouter } from "next/navigation";
 import { CartItem, useCart } from "../context/CartContext";
+import { fetchDrinksById } from "../api";
 
 export type Drink = {
   idDrink: string;
@@ -12,22 +13,6 @@ export type Drink = {
   strCategory: string;
   quantity: number;
   price: number;
-};
-
-export const fetchDrinkById = async (idDrink: number): Promise<Drink> => {
-  const res = await fetch(
-    "https://www.thecocktaildb.com/api/json/v1/1/search.php?f=a"
-  );
-  if (!res.ok) {
-    throw new Error("Failed to fetch data");
-  }
-  const response = await res.json();
-  return response.drinks[idDrink];
-};
-
-export const fetchDrinksById = async (idDrinks: number[]): Promise<Drink[]> => {
-  const drinkPromises = idDrinks.map((idDrink) => fetchDrinkById(idDrink));
-  return Promise.all(drinkPromises);
 };
 
 type SelectDrink = {

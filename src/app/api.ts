@@ -1,3 +1,4 @@
+"use client"
 export type Dish = {
   idMeal: string;
   strMeal: string;
@@ -18,29 +19,46 @@ export type Drink = {
 }
 
 export type OrderType = {
+  image: string;
+  name: string;
+  quantity: number;
+  price: any;
   id: number;
   email: string;
   dish: Dish;
   drinks: Drink[];
   count: number;
   date: string;
+  time: string
 };
 
+export const getRandomDish = async (): Promise<Dish> => {
+  const res = await fetch("https://www.themealdb.com/api/json/v1/1/random.php");
 
-const getOrders = async (): Promise<OrderType[]> => {
-  const res = await fetch("http://localhost:3001/api/orders");
+  if (!res.ok) {
+    throw new Error("failed to fetch data");
+  }
+  const response = await res.json();
+  return response.meals[0];
+};
 
+export const fetchDrinkById = async (idDrink: number): Promise<Drink> => {
+  const res = await fetch(
+    "https://www.thecocktaildb.com/api/json/v1/1/search.php?f=a"
+  );
   if (!res.ok) {
     throw new Error("Failed to fetch data");
   }
-
   const response = await res.json();
-  console.log("Getting order:", response);
-  return response;
+  return response.drinks[idDrink];
 };
 
-export const postOrder = async (order: OrderType): Promise<OrderType> => {
-  console.log("order", order)
+export const fetchDrinksById = async (idDrinks: number[]): Promise<Drink[]> => {
+  const drinkPromises = idDrinks.map((idDrink) => fetchDrinkById(idDrink));
+  return Promise.all(drinkPromises);
+};
+
+export const postOrder =  async (order: OrderType) => {
   const res = await fetch("http://localhost:3001/api/create-order", {
     method: "POST",
     headers: {
@@ -54,11 +72,23 @@ export const postOrder = async (order: OrderType): Promise<OrderType> => {
   }
 
   const response = await res.json();
-  console.log(response);
+  console.log("Order Submitted:", response);
+};
+
+
+export const getOrders = async (): Promise<OrderType[]> => {
+  const res = await fetch("http://localhost:3001/api/orders");
+
+  if (!res.ok) {
+    throw new Error("Failed to fetch data");
+  }
+
+  const response = await res.json();
+  console.log("Getting order:", response);
   return response;
 };
 
-export const getOrderByEmail = async (email: string): Promise<OrderType> => {
+export const fetchOrderByEmail = async (email: string): Promise<OrderType> => {
     const res = await fetch(`http://localhost:3001/api/order/${email}`, {
       method: "GET",
       headers: {
@@ -72,7 +102,7 @@ export const getOrderByEmail = async (email: string): Promise<OrderType> => {
       console.log(response)
       return response;
 }
-const putUpdateOrder =async (order: OrderType): Promise<OrderType> => {
+export const putUpdateOrder =async (order: OrderType): Promise<OrderType> => {
   const res = await fetch("http://localhost:3001/api/update-order", {
     method: "PUT",
     headers: {
@@ -89,7 +119,7 @@ const putUpdateOrder =async (order: OrderType): Promise<OrderType> => {
   console.log(response);
   return response;
 };
-const deleteOrder = async (id: number): Promise<OrderType> => {
+export const deleteOrder = async (id: number): Promise<OrderType> => {
   const res = await fetch(`http://localhost:3001/api/order/${id}"`, {
     method: 'DELETE',
     headers: {
@@ -107,8 +137,10 @@ const deleteOrder = async (id: number): Promise<OrderType> => {
 }
 export const api = {
   getOrders,
-  postOrder,
-  getOrderByEmail,
+  fetchOrderByEmail,
   putUpdateOrder,
-  deleteOrder
+  deleteOrder, 
+  postOrder,
+  getRandomDish,
+ fetchDrinkById,
 }

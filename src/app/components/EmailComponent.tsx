@@ -1,47 +1,101 @@
 "use client";
-import { useState } from "react";
-import { useCart } from "../context/CartContext";
+import { useEffect, useState } from "react";
+import {
+  Dish,
+  Drink,
+  useCart,
+  OrderType,
+  CartItem,
+} from "../context/CartContext";
 import { useRouter } from "next/navigation";
-import { OrderType, api, getOrderByEmail, postOrder } from "../api";
-import { test } from "node:test";
+import { fetchOrderByEmail, postOrder } from "../api";
 
 const EmailComponent = () => {
   const [emailInput, setEmailInput] = useState<string>("");
-  const { setEmail, submitOrder, cart, date, time, guests } = useCart();
+  const { setEmail, cart, date, time } = useCart();
   const router = useRouter();
-  const [order, setOrder] = useState<OrderType>();
+  const [order, setOrder] = useState<OrderType | null>(null);
 
   const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setEmailInput(e.target.value);
   };
 
-  const handleOrderSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleOrderSubmit = async () => {
+    console.log("Cart items:", cart);
     if (emailInput.trim() === "") {
       console.error("Email is required.");
       return;
     }
+    if (!cart.length) {
+      console.error("Cart is empty!");
+      return;
+    }
+    console.log("Cart items:", cart);
+    cart.forEach((item) => {
+      console.log(
+        `Item ID: ${item.id}, idMeal: ${item.idMeal}, idDrink: ${item.idDrink}`
+      );
+    });
     setEmail(emailInput);
 
-    if (order) {
-      console.log("test", order);
-      try {
-        await postOrder(order);
-        console.log("Order Posted:", order);
+    const drinks: Drink[] = cart
+      .filter((item) => item.idDrink)
+      .map((item) => ({
+        idDrink: item.idDrink!,
+        strDrink: item.name,
+        strDrinkThumb: item.image,
+        strInstructions: item.instructions,
+        strCategory: item.category,
+        quantity: item.quantity,
+        price: item.price,
+      }));
 
-        const fetchedOrder = await getOrderByEmail(emailInput);
-        setOrder(fetchedOrder);
-        console.log("Fetched Order after Post:", fetchedOrder);
-
-        router.push("/ReceiptPage");
-      } catch (error) {
-        console.error("Error submitting order:", error);
-      }
+    const dishItem = cart.find((item) => item.idMeal);
+    console.log("Dish item:", dishItem);
+    if (!dishItem) {
+      console.error("No dish in the cart.");
+      return;
     }
-    if (!order) {
-      return <p>Loading...</p>;
+
+    const dish: Dish = {
+      idMeal: dishItem.idMeal!,
+      strMeal: dishItem.name,
+      strMealThumb: dishItem.image,
+      strInstructions: dishItem.instructions,
+      strCategory: dishItem.category,
+      price: dishItem.price,
+      quantity: dishItem.quantity,
+    };
+
+    const orderData: OrderType = {
+      id: Math.floor(Math.random() * 100000),
+      email: emailInput,
+      dish,
+      drinks,
+      count: cart.reduce((total, item) => total + item.quantity, 0),
+      date: date ? date.toISOString() : new Date().toISOString(),
+      time: time || new Date().toISOString(),
+      image: "",
+      name: "",
+      quantity: 0,
+      price: undefined,
+    };
+    try {
+      await postOrder(orderData);
+      console.log("order sumbitted:", orderData);
+
+      const fetchedOrder = await fetchOrderByEmail(emailInput);
+      setOrder(fetchedOrder);
+      console.log("Fetched Order after Post:", fetchedOrder);
+
+      router.push("/ReceiptPage");
+    } catch (error) {
+      console.error("Error submitting order:", error);
     }
   };
+  useEffect(() => {
+    console.log("current cart:", cart);
+  }, [cart]);
 
   return (
     <div>

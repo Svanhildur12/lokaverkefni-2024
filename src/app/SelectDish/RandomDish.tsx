@@ -3,6 +3,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { CartItem, useCart } from "../context/CartContext";
 import Image from "next/image";
+import { getRandomDish, postOrder } from "../api";
 
 export type Dish = {
   idMeal: string;
@@ -14,22 +15,12 @@ export type Dish = {
   quantity: number;
 };
 
-const getRandomDish = async (): Promise<Dish> => {
-  const res = await fetch("https://www.themealdb.com/api/json/v1/1/random.php");
-
-  if (!res.ok) {
-    throw new Error("failed to fetch data");
-  }
-  const response = await res.json();
-  return response.meals[0];
-};
-
 const RandomDish = () => {
   const [dish, setDish] = useState<Dish | null>(null);
   const [quantity, setQuantity] = useState("");
   const router = useRouter();
-  const { addToCart } = useCart();
-  const defaultPrice = 2500;
+  const { addToCart, cart } = useCart();
+  const defaultPrice = 3500;
 
   useEffect(() => {
     fetchDish();
@@ -67,11 +58,12 @@ const RandomDish = () => {
         instructions: dish.strInstructions,
         price: defaultPrice,
         quantity: quantityNumber,
+        idMeal: dish.idMeal,
       };
       addToCart(newCartItem);
       setQuantity("");
+      console.log("New Cart Item added:", newCartItem);
       fetchDish();
-      console.log("added to cart:", newCartItem);
     }
   };
 
