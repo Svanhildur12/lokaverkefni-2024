@@ -18,9 +18,13 @@ const Orders = () => {
     fetchOrder();
   }, [fetchOrder]);
 
+  if (!orders) {
+    return <p>Loading...</p>;
+  }
+
   useEffect(() => {
     calculateTotalPrice();
-  }, [cart]);
+  }, [orders]);
 
   const calculateTotalPrice = () => {
     const total = cart.reduce(
@@ -32,6 +36,15 @@ const Orders = () => {
   const handleQuantityChange = (id: string, quantity: number) => {
     setQuantity(id, quantity);
   };
+  const handleDeleteOrder = async (id: number) => {
+    try {
+      await api.deleteOrder(id);
+      console.log(`Order with id ${id} deleted`);
+      fetchOrder();
+    } catch (error) {
+      console.error("Error deleting order:", error);
+    }
+  };
 
   return (
     <>
@@ -42,35 +55,35 @@ const Orders = () => {
           </h2>
         </div>
         <div className="mx-2">
-          {cart.length === 0 ? (
+          {orders.length === 0 ? (
             <p className="flex justify-center text-white underline text-3xl font-bold bg-red-600">
               Your cart is empty
             </p>
           ) : (
             <div className="">
-              {cart.map((item: CartItem) => (
+              {orders.map((orderItem) => (
                 <div
-                  key={item.id}
+                  key={orderItem.id.toString()}
                   className="flex items-center justify-between mb-4"
                 >
                   <Image
-                    src={item.image}
-                    alt={item.name}
+                    src={orderItem.dish.strMealThumb}
+                    alt={orderItem.dish.strMeal}
                     width={100}
                     height={100}
                   />
                   <div className="flex-1 ml-4">
                     <h3 className="text-xl font-semibold text-yellow-100 underline">
-                      {item.name}
+                      {orderItem.dish.strMeal}
                     </h3>
                     <div className="flex items-center mt-2">
                       <label className="mr-2 text-white">Quantity:</label>
                       <input
                         type="number"
-                        value={item.quantity}
+                        value={orderItem.dish.quantity}
                         onChange={(e) =>
                           handleQuantityChange(
-                            item.id,
+                            orderItem.id.toString(),
                             parseInt(e.target.value)
                           )
                         }
@@ -81,8 +94,14 @@ const Orders = () => {
                   </div>
                   <div className="flex items-center">
                     <p className="text-xl font-semibold text-white bg-black">
-                      {item.price * item.quantity}kr
+                      {orderItem.dish.price * orderItem.dish.quantity}kr
                     </p>
+                    <button
+                      className="ml-4 p-2 bg-red-600 text-white rounded"
+                      onClick={() => handleDeleteOrder(orderItem.id)}
+                    >
+                      Delete
+                    </button>
                   </div>
                 </div>
               ))}

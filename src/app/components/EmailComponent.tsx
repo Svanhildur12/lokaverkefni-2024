@@ -8,11 +8,11 @@ import {
   CartItem,
 } from "../context/CartContext";
 import { useRouter } from "next/navigation";
-import { fetchOrderByEmail, postOrder } from "../api";
+import { fetchOrderByEmail, getOrders, postOrder } from "../api";
 
 const EmailComponent = () => {
   const [emailInput, setEmailInput] = useState<string>("");
-  const { setEmail, cart, date, time } = useCart();
+  const { setEmail, cart, date, time, clearCart } = useCart();
   const router = useRouter();
   const [order, setOrder] = useState<OrderType | null>(null);
 
@@ -21,24 +21,13 @@ const EmailComponent = () => {
   };
 
   const handleOrderSubmit = async () => {
-    console.log("Cart items:", cart);
     if (emailInput.trim() === "") {
       console.error("Email is required.");
       return;
     }
-    if (!cart.length) {
-      console.error("Cart is empty!");
-      return;
-    }
-    console.log("Cart items:", cart);
-    cart.forEach((item) => {
-      console.log(
-        `Item ID: ${item.id}, idMeal: ${item.idMeal}, idDrink: ${item.idDrink}`
-      );
-    });
     setEmail(emailInput);
 
-    const drinks: Drink[] = cart
+    const drinks = cart
       .filter((item) => item.idDrink)
       .map((item) => ({
         idDrink: item.idDrink!,
@@ -49,6 +38,7 @@ const EmailComponent = () => {
         quantity: item.quantity,
         price: item.price,
       }));
+    console.log("Filtered drinks:", drinks);
 
     const dishItem = cart.find((item) => item.idMeal);
     console.log("Dish item:", dishItem);
@@ -57,7 +47,7 @@ const EmailComponent = () => {
       return;
     }
 
-    const dish: Dish = {
+    const dish = {
       idMeal: dishItem.idMeal!,
       strMeal: dishItem.name,
       strMealThumb: dishItem.image,
@@ -67,27 +57,24 @@ const EmailComponent = () => {
       quantity: dishItem.quantity,
     };
 
-    const orderData: OrderType = {
-      id: Math.floor(Math.random() * 100000),
+    const orderData: Partial<OrderType> = {
       email: emailInput,
       dish,
       drinks,
       count: cart.reduce((total, item) => total + item.quantity, 0),
       date: date ? date.toISOString() : new Date().toISOString(),
       time: time || new Date().toISOString(),
-      image: "",
-      name: "",
-      quantity: 0,
-      price: undefined,
     };
+    console.log("Order data to be submitted:", orderData);
     try {
-      await postOrder(orderData);
-      console.log("order sumbitted:", orderData);
+      const foo = await postOrder;
+      console.log(foo);
 
       const fetchedOrder = await fetchOrderByEmail(emailInput);
       setOrder(fetchedOrder);
       console.log("Fetched Order after Post:", fetchedOrder);
 
+      clearCart();
       router.push("/ReceiptPage");
     } catch (error) {
       console.error("Error submitting order:", error);

@@ -72,7 +72,7 @@ export const postOrder =  async (order: OrderType) => {
   }
 
   const response = await res.json();
-  console.log("Order Submitted:", response);
+ 
 };
 
 

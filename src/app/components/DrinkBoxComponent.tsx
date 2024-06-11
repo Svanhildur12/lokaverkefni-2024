@@ -22,7 +22,7 @@ const DrinkBox = ({
 }: DrinkBoxProps) => {
   const handleQuantityBlur = (event: React.FocusEvent<HTMLInputElement>) => {
     const value = event.target.value;
-    const newQuantity = value === "" ? undefined : parseInt(value, 10);
+    const newQuantity = value === "" ? undefined : parseInt(value, 0);
     onQuantityChange(newQuantity || 0);
   };
   return (

@@ -70,6 +70,7 @@ export type CartContextType = {
   setTime: (time: string | null) => void;
   setGuests: (guests: number) => void;
   setEmail: (email: string) => void;
+  clearCart: () => void;
 };
 
 export const CartContext = createContext<CartContextType>({
@@ -84,6 +85,7 @@ export const CartContext = createContext<CartContextType>({
   setTime: (time: string | null) => {},
   setGuests: (guests: number) => {},
   setEmail: (email: string) => {},
+  clearCart: () => {},
 });
 
 export const CartProvider = ({ children }: { children: ReactNode }) => {
@@ -127,6 +129,11 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     );
   };
 
+  const clearCart = () => {
+    setCart([]);
+    localStorage.removeItem("cart");
+  };
+
   return (
     <CartContext.Provider
       value={{
@@ -141,6 +148,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
         setTime,
         setGuests,
         setEmail,
+        clearCart,
       }}
     >
       {children}

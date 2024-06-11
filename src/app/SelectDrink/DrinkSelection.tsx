@@ -25,9 +25,9 @@ const DrinksPage = () => {
   const [selectedDrink, setSelectedDrink] = useState<{
     [Key: string]: SelectDrink;
   }>({});
-  const drinksIds = [0, 2, 20, 4, 5, 6];
+  const drinksIds = [3, 2, 20, 4, 5, 6];
   const router = useRouter();
-  const { addToCart } = useCart();
+  const { addToCart, cart } = useCart();
   const defaultPrice = 2500;
 
   useEffect(() => {
@@ -45,6 +45,9 @@ const DrinksPage = () => {
   useEffect(() => {
     console.log("current drink:", drink);
   }, [drink]);
+  useEffect(() => {
+    console.log("current cart:", cart);
+  }, [cart]);
 
   if (!drink) {
     return <p>Loading...</p>;
@@ -88,6 +91,7 @@ const DrinksPage = () => {
       drinksToPost.forEach(({ drink, quantity }) => {
         const newCartItem: CartItem = {
           id: drink.idDrink,
+          idDrink: drink.idDrink,
           name: drink.strDrink,
           image: drink.strDrinkThumb,
           instructions: drink.strInstructions,
