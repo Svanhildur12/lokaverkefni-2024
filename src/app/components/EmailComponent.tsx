@@ -57,17 +57,22 @@ const EmailComponent = () => {
       quantity: dishItem.quantity,
     };
 
-    const orderData: Partial<OrderType> = {
+    const orderData: OrderType = {
       email: emailInput,
       dish,
       drinks,
       count: cart.reduce((total, item) => total + item.quantity, 0),
       date: date ? date.toISOString() : new Date().toISOString(),
       time: time || new Date().toISOString(),
+      image: "",
+      name: "",
+      quantity: 0,
+      price: undefined,
+      id: 0,
     };
     console.log("Order data to be submitted:", orderData);
     try {
-      const foo = await postOrder;
+      const foo = await postOrder(orderData);
       console.log(foo);
 
       const fetchedOrder = await fetchOrderByEmail(emailInput);
