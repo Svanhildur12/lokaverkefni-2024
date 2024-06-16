@@ -1,14 +1,8 @@
 "use client";
 import { useEffect, useState } from "react";
-import {
-  Dish,
-  Drink,
-  useCart,
-  OrderType,
-  CartItem,
-} from "../context/CartContext";
+import { useCart, OrderType } from "../context/CartContext";
 import { useRouter } from "next/navigation";
-import { fetchOrderByEmail, getOrders, postOrder } from "../api";
+import { fetchOrderByEmail, postOrder } from "../api";
 
 const EmailComponent = () => {
   const [emailInput, setEmailInput] = useState<string>("");
@@ -30,6 +24,7 @@ const EmailComponent = () => {
     const drinks = cart
       .filter((item) => item.idDrink)
       .map((item) => ({
+        id: parseInt(item.idDrink!),
         idDrink: item.idDrink!,
         strDrink: item.name,
         strDrinkThumb: item.image,
@@ -48,6 +43,7 @@ const EmailComponent = () => {
     }
 
     const dish = {
+      id: parseInt(dishItem.idMeal!),
       idMeal: dishItem.idMeal!,
       strMeal: dishItem.name,
       strMealThumb: dishItem.image,
@@ -64,22 +60,18 @@ const EmailComponent = () => {
       count: cart.reduce((total, item) => total + item.quantity, 0),
       date: date ? date.toISOString() : new Date().toISOString(),
       time: time || new Date().toISOString(),
-      image: "",
-      name: "",
-      quantity: 0,
       price: undefined,
       id: 0,
     };
-    console.log("Order data to be submitted:", orderData);
+
     try {
-      const foo = await postOrder(orderData);
-      console.log(foo);
+      const postedOrder = await postOrder(orderData);
+      console.log(postedOrder);
 
       const fetchedOrder = await fetchOrderByEmail(emailInput);
-      setOrder(fetchedOrder);
+      setOrder(order);
       console.log("Fetched Order after Post:", fetchedOrder);
 
-      clearCart();
       router.push("/ReceiptPage");
     } catch (error) {
       console.error("Error submitting order:", error);

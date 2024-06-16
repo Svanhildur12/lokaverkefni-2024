@@ -1,6 +1,6 @@
 "use client";
 import React, { useState } from "react";
-import { api, fetchOrderByEmail } from "../api";
+import { api } from "../api";
 import { useRouter } from "next/navigation";
 
 const UserInfo = () => {
@@ -11,6 +11,7 @@ const UserInfo = () => {
   const handleShowInput = () => {
     setShowInput((prevShowInput) => !prevShowInput);
   };
+
   const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setEmailInput(e.target.value);
   };
@@ -22,7 +23,8 @@ const UserInfo = () => {
       return;
     }
     try {
-      await api.fetchOrderByEmail(emailInput);
+      const foo = await api.fetchOrderByEmail(emailInput);
+      setEmailInput(emailInput);
       router.push("/ReceiptPage");
     } catch (error) {
       console.error("Error retriving order:", error);
@@ -61,6 +63,7 @@ const UserInfo = () => {
               <button
                 type="submit"
                 className="border-2 border-solid rounded-md bg-yellow-100 border-white text-black font-bold w-16 md:w-24 lg:h-10 h-8 m-2"
+                onClick={handleRetriveOrder}
               >
                 FIND
               </button>

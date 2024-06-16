@@ -1,10 +1,14 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useCart } from "../context/CartContext";
 
 const GuestCounter = () => {
   const [count, setCount] = useState<number>(0);
-  const { setGuests } = useCart();
+  const { guests, setGuests } = useCart();
+
+  useEffect(() => {
+    setCount(guests);
+  }, [guests]);
 
   const handleSubmit = () => {
     console.log(" number of guests:", count);

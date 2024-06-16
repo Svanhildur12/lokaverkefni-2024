@@ -74,7 +74,7 @@ const RandomDish = () => {
   const ScrollableComponent = () => {
     return (
       <div className="h-52 overflow-scroll lg:h-96 lg:mr-52">
-        <div className="border-yellow-100 border-4 border-spacing-x-1 border-double rounded-md bg-opacity-75 text-yellow-100 md:text-2x lg:text-3xl">
+        <div className="border-yellow-100 border-4 border-spacing-x-1 border-double rounded-md bg-opacity-75 text-yellow-100 text-md md:text-2xl lg:text-3xl">
           {dish.strInstructions}
         </div>
       </div>
@@ -121,7 +121,7 @@ const RandomDish = () => {
               <label className="flex justify-start rounded-md bg-yellow-100 text-black md:text-2xl pl-2 md:h-10 md:pt-1 lg:text-3xl lg:-mt-64 lg:-ml-32">
                 Quantity:
                 <input
-                  className="rounded-md text-black bg-yellow-100 w-10 lg:w-44 ml-2 md:text-2xl"
+                  className="rounded-md text-black bg-yellow-100 w-14 lg:w-44 ml-2 md:text-2xl"
                   id="number"
                   type="number"
                   value={quantity}

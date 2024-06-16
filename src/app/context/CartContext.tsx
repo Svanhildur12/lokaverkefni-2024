@@ -27,17 +27,14 @@ export type Drink = {
 };
 
 export type OrderType = {
-  image: string;
-  name: string;
-  quantity: number;
-  price: any;
-  id: number;
+  price: number | undefined;
   email: string;
   dish: Dish;
   drinks: Drink[];
   count: number;
   date: string;
   time: string;
+  id: number;
 };
 
 export interface CartItem {
@@ -71,6 +68,7 @@ export type CartContextType = {
   setGuests: (guests: number) => void;
   setEmail: (email: string) => void;
   clearCart: () => void;
+  setCart: (cart: CartItem[]) => void;
 };
 
 export const CartContext = createContext<CartContextType>({
@@ -86,6 +84,7 @@ export const CartContext = createContext<CartContextType>({
   setGuests: (guests: number) => {},
   setEmail: (email: string) => {},
   clearCart: () => {},
+  setCart: () => {},
 });
 
 export const CartProvider = ({ children }: { children: ReactNode }) => {
@@ -96,16 +95,89 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     }
     return [];
   });
-  const [date, setDate] = useState<Date | null>(new Date());
-  const [time, setTime] = useState<string | null>("");
-  const [guests, setGuests] = useState<number>(0);
-  const [email, setEmail] = useState<string | null>("");
+  const [date, setDate] = useState<Date | null>(() => {
+    if (typeof window !== "undefined") {
+      const savedDate = localStorage.getItem("date");
+      if (savedDate) {
+        try {
+          const parsedDate = new Date(savedDate);
+          if (!isNaN(parsedDate.getTime())) {
+            console.log("Retrieved date from local:", parsedDate);
+            return parsedDate;
+          } else {
+            console.error("Invalid date format in localStorage");
+          }
+        } catch (error) {
+          console.error("Error parsing date from localStorage:", error);
+        }
+      }
+    }
+    return null;
+  });
+  const [time, setTime] = useState<string | null>(() => {
+    if (typeof window !== "undefined") {
+      const savedTime = localStorage.getItem("time");
+      return savedTime ? savedTime : null;
+    }
+    return null;
+  });
+  const [guests, setGuests] = useState<number>(() => {
+    if (typeof window !== "undefined") {
+      const savedGuests = localStorage.getItem("guests");
+      return savedGuests ? parseInt(savedGuests, 10) : 0;
+    }
+    return 0;
+  });
+  const [email, setEmail] = useState<string | null>(() => {
+    if (typeof window !== "undefined") {
+      const savedEmail = localStorage.getItem("email");
+      return savedEmail || null;
+    }
+    return null;
+  });
 
   useEffect(() => {
     if (typeof window !== "undefined") {
       localStorage.setItem("cart", JSON.stringify(cart));
     }
   }, [cart]);
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      if (date) {
+        console.log("Storing date to localStorage:", date);
+        localStorage.setItem("date", date.toISOString());
+      } else {
+        localStorage.removeItem("date");
+      }
+    }
+  }, [date]);
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      if (time) {
+        localStorage.setItem("time", time);
+      } else {
+        localStorage.removeItem("time");
+      }
+    }
+  }, [time]);
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      localStorage.setItem("guests", guests.toString());
+    }
+  }, [guests]);
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      if (email) {
+        localStorage.setItem("email", email);
+      } else {
+        localStorage.removeItem("email");
+      }
+    }
+  }, [email]);
 
   const addToCart = (item: CartItem) => {
     setCart((prevCart) => {
@@ -132,6 +204,10 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   const clearCart = () => {
     setCart([]);
     localStorage.removeItem("cart");
+    localStorage.removeItem("date");
+    localStorage.removeItem("time");
+    localStorage.removeItem("guests");
+    localStorage.removeItem("email");
   };
 
   return (
@@ -149,6 +225,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
         setGuests,
         setEmail,
         clearCart,
+        setCart,
       }}
     >
       {children}

@@ -22,11 +22,20 @@ const Calendar = () => {
     window.addEventListener("resize", handleResize);
   }, []);
 
+  const formatDate = (date: Date): string => {
+    const day = String(date.getDate()).padStart(2, "0");
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const year = date.getFullYear();
+    return `${month}/${day}/${year}`;
+  };
+
   const handleDateSelect = (date: Date | undefined) => {
     if (date) {
-      console.log("date picked:", date.toISOString().split("T")[0]);
+      const formattedDate = formatDate(date);
+      console.log("date picked:", formattedDate);
       setSelectedDate(date);
       setDate(date);
+      console.log("stored date in context:", date);
     } else {
       setSelectedDate(undefined);
       setDate(null);
@@ -35,7 +44,7 @@ const Calendar = () => {
 
   return (
     <>
-      <div className="lg:flex lg:justify-center lg:mt-10">
+      <div className="lg:flex lg:justify-center md:mt-10 lg:mt-10">
         <p className="text-center m-5 ml-5 mr-5 border-8 border-double rounded-md underline font-bold text-xl bg-green-950 text-yellow-100 md:text-4xl lg:text-6xl lg:p-2">
           Please pick a date
         </p>

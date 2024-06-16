@@ -18,19 +18,22 @@ export type Drink = {
   price: number;
 }
 
-export type OrderType = {
-  image: string;
-  name: string;
+export type DishType = {
+  idMeal: string;
+  strMeal: string;
+  strMealThumb: string;
+  price: number;
   quantity: number;
-  price: any;
-  id: number;
-  email: string;
-  dish: Dish;
-  drinks: Drink[];
-  count: number;
-  date: string;
-  time: string
 };
+
+export type DrinkType = Drink[];
+
+export type OrderType = {
+  id: number;
+  dish: DishType;
+  drinks: DrinkType;
+};
+
 
 export const getRandomDish = async (): Promise<Dish> => {
   const res = await fetch("https://www.themealdb.com/api/json/v1/1/random.php");
@@ -66,15 +69,11 @@ export const postOrder =  async (order: OrderType) => {
     },
     body: JSON.stringify(order),
   });
-
   if (!res.ok) {
     throw new Error("Failed to post data");
   }
-
-  const response = await res.json();
- return response;
+ return res.json();
 };
-
 
 export const getOrders = async (): Promise<OrderType[]> => {
   const res = await fetch("http://localhost:3001/api/orders");
@@ -85,6 +84,9 @@ export const getOrders = async (): Promise<OrderType[]> => {
 
   const response = await res.json();
   console.log("Getting order:", response);
+  response.forEach((order: OrderType) => {
+    order.drinks = order.drinks || []
+  })
   return response;
 };
 

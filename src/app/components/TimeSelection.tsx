@@ -16,7 +16,7 @@ const TimeSelection = () => {
       if (hours < 16 || hours > 23 || (hours === 23 && minutes > 0)) {
         setTimeError("Please select time from 16:00 - 23:00");
         setSelectedTime(null);
-        setTime(null);
+        setTime(time);
       } else {
         setTimeError(null);
         setSelectedTime(time);
@@ -25,7 +25,6 @@ const TimeSelection = () => {
     } else {
       setTimeError(null);
       setSelectedTime(null);
-      setTime(null);
     }
   };
 

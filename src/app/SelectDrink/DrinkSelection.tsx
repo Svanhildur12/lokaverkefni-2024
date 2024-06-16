@@ -25,7 +25,7 @@ const DrinksPage = () => {
   const [selectedDrink, setSelectedDrink] = useState<{
     [Key: string]: SelectDrink;
   }>({});
-  const drinksIds = [3, 2, 20, 4, 5, 6];
+  const drinksIds = [3, 2, 20, 13, 5, 7];
   const router = useRouter();
   const { addToCart, cart } = useCart();
   const defaultPrice = 2500;
