@@ -1,14 +1,13 @@
 "use client";
 import { useEffect, useState } from "react";
-import { useCart, OrderType } from "../context/CartContext";
+import { useCart } from "../context/CartContext";
 import { useRouter } from "next/navigation";
 import { postOrder } from "../api";
 
-const EmailComponent = () => {
+const OrderComponent = () => {
   const [emailInput, setEmailInput] = useState<string>("");
   const { setEmail, cart, date, time, guests, clearCart } = useCart();
   const router = useRouter();
-  const [order, setOrder] = useState<OrderType | null>(null);
 
   const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setEmailInput(e.target.value);
@@ -72,10 +71,6 @@ const EmailComponent = () => {
     }
   };
 
-  useEffect(() => {
-    console.log("current cart:", cart);
-  }, [cart]);
-
   return (
     <div>
       <div className="flex justify-center m-5">
@@ -108,4 +103,4 @@ const EmailComponent = () => {
   );
 };
 
-export default EmailComponent;
+export default OrderComponent;

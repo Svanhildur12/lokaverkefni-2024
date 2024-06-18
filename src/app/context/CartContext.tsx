@@ -138,7 +138,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
 
   useEffect(() => {
     if (typeof window !== "undefined" && date) {
-      localStorage.setItem("date", date.toISOString());
+      localStorage.setItem("date", Date());
     }
   }, [date]);
 
@@ -187,6 +187,11 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   const clearCart = () => {
     console.log("clearCart function called");
     setCart([]);
+    setDate(null);
+    setDate(null);
+    setTime(null);
+    setGuests(0);
+    setEmail(null);
     localStorage.removeItem("cart");
     localStorage.removeItem("date");
     localStorage.removeItem("time");

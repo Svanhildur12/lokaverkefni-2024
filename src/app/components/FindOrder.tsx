@@ -24,8 +24,6 @@ const FindOrder = () => {
       try {
         const fetchedOrder = await api.fetchOrderByEmail(emailInput);
         console.log("fetched order:", fetchedOrder);
-
-        // Set order details in context
         setEmail(fetchedOrder.email);
         setDate(new Date(fetchedOrder.date));
         setTime(fetchedOrder.time);
@@ -36,7 +34,7 @@ const FindOrder = () => {
         console.error("Error retrieving order:", error);
       }
     } else {
-      console.log("Email is required to retrieve order");
+      console.log("Email is required");
     }
   };
 

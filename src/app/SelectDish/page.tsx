@@ -10,7 +10,7 @@ const SelectDish = () => {
       <CartProvider>
         <Header />
         <div className="m-5 text-white text-center font-bold">
-          <RandomDish />{" "}
+          <RandomDish />
         </div>
       </CartProvider>
     </>

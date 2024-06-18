@@ -5,7 +5,7 @@ import Image from "next/image";
 import { OrderType, api } from "../api";
 import { useRouter } from "next/navigation";
 
-const Orders = () => {
+const ReceiptComponent = () => {
   const {
     setQuantity,
     date,
@@ -27,7 +27,7 @@ const Orders = () => {
       const fetchOrders = await api.getOrders();
       setOrders(fetchOrders);
       if (fetchOrders.length > 0) {
-        const firstOrder = fetchOrders[0];
+        const firstOrder = fetchOrders[1];
         setEmail(firstOrder.email);
         setDate(new Date(firstOrder.date));
         setTime(firstOrder.time);
@@ -252,4 +252,4 @@ const Orders = () => {
   );
 };
 
-export default Orders;
+export default ReceiptComponent;

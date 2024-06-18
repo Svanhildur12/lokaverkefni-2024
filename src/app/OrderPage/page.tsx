@@ -5,7 +5,7 @@ import CalendarComponent from "../components/CalendarComponent";
 import TimeSelection from "../components/TimeSelection";
 import GuestCounter from "../components/GuestCounter";
 import { CartProvider } from "../context/CartContext";
-import EmailComponent from "../components/EmailComponent";
+import OrderComponent from "../components/OrderComponent";
 
 const OrderPage = () => {
   return (
@@ -15,7 +15,7 @@ const OrderPage = () => {
         <CalendarComponent />
         <TimeSelection />
         <GuestCounter />
-        <EmailComponent />
+        <OrderComponent />
       </CartProvider>
     </>
   );

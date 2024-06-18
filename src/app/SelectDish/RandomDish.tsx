@@ -19,7 +19,7 @@ const RandomDish = () => {
   const [dish, setDish] = useState<Dish | null>(null);
   const [quantity, setQuantity] = useState("");
   const router = useRouter();
-  const { addToCart, cart } = useCart();
+  const { addToCart } = useCart();
   const defaultPrice = 3500;
 
   useEffect(() => {
@@ -138,7 +138,6 @@ const RandomDish = () => {
                 value=""
                 className="bg-yellow-100 text-black font-bold rounded-md mt-5 md:text-2xl md:w-44 lg:-ml-32"
               >
-                {" "}
                 Add To Cart
               </button>
               <div className="mt-2"></div>

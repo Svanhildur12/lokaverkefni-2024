@@ -2,14 +2,14 @@
 import React from "react";
 import Header from "../components/Header";
 import { CartProvider } from "../context/CartContext";
-import Orders from "../components/Orders";
+import ReceiptComponent from "../components/ReceiptComponent";
 
 const ReceiptPage = () => {
   return (
     <>
       <CartProvider>
         <Header />
-        <Orders />
+        <ReceiptComponent />
       </CartProvider>
     </>
   );
