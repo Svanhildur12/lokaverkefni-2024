@@ -6,7 +6,7 @@ import { fetchOrderByEmail, postOrder } from "../api";
 
 const EmailComponent = () => {
   const [emailInput, setEmailInput] = useState<string>("");
-  const { setEmail, cart, date, time, clearCart } = useCart();
+  const { setEmail, cart, date, time, guests } = useCart();
   const router = useRouter();
   const [order, setOrder] = useState<OrderType | null>(null);
 
@@ -33,10 +33,8 @@ const EmailComponent = () => {
         quantity: item.quantity,
         price: item.price,
       }));
-    console.log("Filtered drinks:", drinks);
 
     const dishItem = cart.find((item) => item.idMeal);
-    console.log("Dish item:", dishItem);
     if (!dishItem) {
       console.error("No dish in the cart.");
       return;
@@ -66,10 +64,10 @@ const EmailComponent = () => {
 
     try {
       const postedOrder = await postOrder(orderData);
-      console.log(postedOrder);
+      console.log("Order posted:", postedOrder);
 
       const fetchedOrder = await fetchOrderByEmail(emailInput);
-      setOrder(order);
+      setOrder(fetchedOrder);
       console.log("Fetched Order after Post:", fetchedOrder);
 
       router.push("/ReceiptPage");
@@ -77,6 +75,7 @@ const EmailComponent = () => {
       console.error("Error submitting order:", error);
     }
   };
+
   useEffect(() => {
     console.log("current cart:", cart);
   }, [cart]);
