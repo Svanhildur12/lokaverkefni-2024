@@ -6,15 +6,37 @@ import { OrderType, api } from "../api";
 import { useRouter } from "next/navigation";
 
 const Orders = () => {
-  const { setQuantity, date, time, guests, email, clearCart } = useCart();
+  const {
+    setQuantity,
+    date,
+    time,
+    guests,
+    email,
+    clearCart,
+    setEmail,
+    setDate,
+    setTime,
+    setGuests,
+  } = useCart();
   const [totalPrice, setTotalPrice] = useState<number>(0);
   const [orders, setOrders] = useState<OrderType[]>([]);
   const router = useRouter();
 
   const fetchOrder = useCallback(async () => {
-    const fetchOrders = await api.getOrders();
-    setOrders(fetchOrders);
-  }, []);
+    try {
+      const fetchOrders = await api.getOrders();
+      setOrders(fetchOrders);
+      if (fetchOrders.length > 0) {
+        const firstOrder = fetchOrders[0];
+        setEmail(firstOrder.email);
+        setDate(new Date(firstOrder.date));
+        setTime(firstOrder.time);
+        setGuests(firstOrder.guests);
+      }
+    } catch (error) {
+      console.error("Error fetching orders:", error);
+    }
+  }, [setEmail, setDate, setTime, setGuests]);
 
   useEffect(() => {
     fetchOrder();
@@ -74,8 +96,9 @@ const Orders = () => {
   };
 
   const handleClearCart = () => {
+    console.log("Before clearCart:", localStorage.getItem("cart"));
     clearCart();
-    console.log("cart is cleared");
+    console.log("After clearCart:", localStorage.getItem("cart"));
     router.push("/");
   };
 
@@ -197,23 +220,23 @@ const Orders = () => {
           </div>
           <div className="">
             <h3 className=" flex justify-center text-xl md:text-2xl font-bold text-white bg-red-600">
-              Selected Date: {formattedDate}
+              Date: {formattedDate}
             </h3>
           </div>
           <div className="">
             <h3 className="flex justify-center text-xl md:text-2xl font-bold text-white bg-red-600">
-              Selected Time: {formattedTime}
+              Time: {formattedTime}
             </h3>
           </div>
           <div className="">
             <h3 className="flex justify-center text-xl md:text-2xl font-bold text-white bg-red-600">
-              Number of Guests: {numberOfGuests}
+              Guests: {numberOfGuests}
             </h3>
             <div className="">
               <h3 className="flex justify-center text-xl md:text-2xl font-bold text-white bg-red-600">
-                Email address: {emailAddress}
+                Email: {emailAddress}
               </h3>
-              <div className="flex justify-center mt-10 lg:mb-10">
+              <div className="flex justify-center mt-10 mb-10 md:mb-10 lg:mb-10">
                 <button
                   className="text-yellow-100 border-2 border-black  bg-black font-bold md:text-2xl"
                   onClick={handleClearCart}

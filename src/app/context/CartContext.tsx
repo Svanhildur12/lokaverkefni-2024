@@ -32,10 +32,10 @@ export type OrderType = {
   email: string;
   dish: Dish;
   drinks: Drink[];
-  count: number;
   date: string;
   time: string;
   id: number;
+  guests: number;
 };
 
 export interface CartItem {
@@ -99,18 +99,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   const [date, setDate] = useState<Date | null>(() => {
     if (typeof window !== "undefined") {
       const savedDate = localStorage.getItem("date");
-      if (savedDate) {
-        try {
-          const parsedDate = new Date(savedDate);
-          if (!isNaN(parsedDate.getTime())) {
-            return parsedDate;
-          } else {
-            console.error("Invalid date format in localStorage");
-          }
-        } catch (error) {
-          console.error("Error parsing date from localStorage:", error);
-        }
-      }
+      return savedDate ? new Date(savedDate) : null;
     }
     return null;
   });
@@ -204,6 +193,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     localStorage.removeItem("time");
     localStorage.removeItem("guests");
     localStorage.removeItem("email");
+    console.log("cart is cleared");
   };
 
   return (

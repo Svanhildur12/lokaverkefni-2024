@@ -2,11 +2,13 @@
 import React, { useState } from "react";
 import { api } from "../api";
 import { useRouter } from "next/navigation";
+import { useCart } from "../context/CartContext";
 
 const UserInfo = () => {
   const [showInput, setShowInput] = useState(false);
   const [emailInput, setEmailInput] = useState<string>("");
   const router = useRouter();
+  const { setDate, setEmail, setTime, setGuests } = useCart();
 
   const handleShowInput = () => {
     setShowInput((prevShowInput) => !prevShowInput);
@@ -18,16 +20,23 @@ const UserInfo = () => {
 
   const handleRetriveOrder = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (emailInput.trim() === "") {
-      console.log("Email is required to retrive order");
-      return;
-    }
-    try {
-      const fetchedOrder = await api.fetchOrderByEmail(emailInput);
-      console.log("fetched order:", fetchedOrder);
-      router.push(`/ReceiptPage?email=${emailInput}`);
-    } catch (error) {
-      console.error("Error retriving order:", error);
+    if (emailInput.trim() !== "") {
+      try {
+        const fetchedOrder = await api.fetchOrderByEmail(emailInput);
+        console.log("fetched order:", fetchedOrder);
+
+        // Set order details in context
+        setEmail(fetchedOrder.email);
+        setDate(new Date(fetchedOrder.date));
+        setTime(fetchedOrder.time);
+        setGuests(fetchedOrder.guests);
+
+        router.push(`/ReceiptPage?email=${emailInput}`);
+      } catch (error) {
+        console.error("Error retrieving order:", error);
+      }
+    } else {
+      console.log("Email is required to retrieve order");
     }
   };
 

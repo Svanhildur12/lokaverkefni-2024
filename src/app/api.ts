@@ -41,12 +41,12 @@ export type DrinkType = {
 export type OrderType = {
   price?: number;
   email: string;
-  count: number;
   date: string;
   time: string;
   id: number;
   dish: DishType;
   drinks: DrinkType[];
+  guests: number;
 };
 
 export const getRandomDish = async (): Promise<Dish> => {
