@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import { useCart, OrderType } from "../context/CartContext";
 import { useRouter } from "next/navigation";
-import { fetchOrderByEmail, postOrder } from "../api";
+import { postOrder } from "../api";
 
 const EmailComponent = () => {
   const [emailInput, setEmailInput] = useState<string>("");

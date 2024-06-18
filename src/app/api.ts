@@ -17,7 +17,6 @@ export type Drink = {
   quantity: number;
   price: number;
 }
-
 export type DishType = {
   idMeal: string;
   strMeal: string;
@@ -27,7 +26,6 @@ export type DishType = {
   price: number;
   quantity: number;
 };
-
 export type DrinkType = {
   idDrink: string;
   strDrink: string;
@@ -37,7 +35,6 @@ export type DrinkType = {
   quantity: number;
   price: number;
 };
-
 export type OrderType = {
   price?: number;
   email: string;

@@ -4,7 +4,7 @@ import { api } from "../api";
 import { useRouter } from "next/navigation";
 import { useCart } from "../context/CartContext";
 
-const UserInfo = () => {
+const FindOrder = () => {
   const [showInput, setShowInput] = useState(false);
   const [emailInput, setEmailInput] = useState<string>("");
   const router = useRouter();
@@ -84,4 +84,4 @@ const UserInfo = () => {
   );
 };
 
-export default UserInfo;
+export default FindOrder;

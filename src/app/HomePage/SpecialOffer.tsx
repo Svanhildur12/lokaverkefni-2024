@@ -3,7 +3,6 @@ import React from "react";
 import Image from "next/image";
 
 const SpecialOffer = () => {
-  // this needs some fixing... not sure if I want to keep it like this...GET BACK TO THIS!
   return (
     <div className="mt-20 ml-10 mr-10">
       <div className="flex justify-center">
