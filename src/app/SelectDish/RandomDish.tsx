@@ -3,7 +3,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { CartItem, useCart } from "../context/CartContext";
 import Image from "next/image";
-import { getRandomDish, postOrder } from "../api";
+import { getRandomDish } from "../api";
 
 export type Dish = {
   idMeal: string;

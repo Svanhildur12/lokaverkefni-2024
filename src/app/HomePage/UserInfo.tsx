@@ -23,9 +23,9 @@ const UserInfo = () => {
       return;
     }
     try {
-      const foo = await api.fetchOrderByEmail(emailInput);
-      setEmailInput(emailInput);
-      router.push("/ReceiptPage");
+      const fetchedOrder = await api.fetchOrderByEmail(emailInput);
+      console.log("fetched order:", fetchedOrder);
+      router.push(`/ReceiptPage?email=${emailInput}`);
     } catch (error) {
       console.error("Error retriving order:", error);
     }

@@ -6,5 +6,5 @@
   @apply bg-custom-bullet opacity-100;
 }
 .swiper-pagination-bullet-active {
-  @apply bg-custom-active-bullet;
+  @apply bg-red-400;
 }

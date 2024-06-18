@@ -9,9 +9,7 @@ const ReceiptPage = () => {
     <>
       <CartProvider>
         <Header />
-        {/* make the "Receipt" in navbar highlighted! */}
         <Orders />
-        {/*  <Orders /> */}
       </CartProvider>
     </>
   );

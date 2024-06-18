@@ -12,7 +12,6 @@ const OrderPage = () => {
     <>
       <CartProvider>
         <Header />
-        {/* make the "order" in navbar highlighted! */}
         <CalendarComponent />
         <TimeSelection />
         <GuestCounter />

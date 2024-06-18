@@ -22,18 +22,32 @@ export type DishType = {
   idMeal: string;
   strMeal: string;
   strMealThumb: string;
+  strInstructions: string;
+  strCategory: string;
   price: number;
   quantity: number;
 };
 
-export type DrinkType = Drink[];
-
-export type OrderType = {
-  id: number;
-  dish: DishType;
-  drinks: DrinkType;
+export type DrinkType = {
+  idDrink: string;
+  strDrink: string;
+  strInstructions: string;
+  strDrinkThumb: string;
+  strCategory: string;
+  quantity: number;
+  price: number;
 };
 
+export type OrderType = {
+  price?: number;
+  email: string;
+  count: number;
+  date: string;
+  time: string;
+  id: number;
+  dish: DishType;
+  drinks: DrinkType[];
+};
 
 export const getRandomDish = async (): Promise<Dish> => {
   const res = await fetch("https://www.themealdb.com/api/json/v1/1/random.php");
@@ -61,7 +75,7 @@ export const fetchDrinksById = async (idDrinks: number[]): Promise<Drink[]> => {
   return Promise.all(drinkPromises);
 };
 
-export const postOrder =  async (order: OrderType) => {
+export const postOrder =  async (order: OrderType): Promise<OrderType> => {
   const res = await fetch("http://localhost:3001/api/create-order", {
     method: "POST",
     headers: {
@@ -90,7 +104,7 @@ export const getOrders = async (): Promise<OrderType[]> => {
   return response;
 };
 
-export const fetchOrderByEmail = async (email: string): Promise<OrderType> => {
+export const fetchOrderByEmail = async (email: string) => {
     const res = await fetch(`http://localhost:3001/api/order/${email}`, {
       method: "GET",
       headers: {
@@ -100,10 +114,11 @@ export const fetchOrderByEmail = async (email: string): Promise<OrderType> => {
     if (!res.ok) {
       throw new Error("Could not find order with email");
       }
-      const response = await res.json()
+      const response = await res.json();
       console.log(response)
       return response;
 }
+
 export const putUpdateOrder =async (order: OrderType): Promise<OrderType> => {
   const res = await fetch("http://localhost:3001/api/update-order", {
     method: "PUT",
@@ -116,11 +131,11 @@ export const putUpdateOrder =async (order: OrderType): Promise<OrderType> => {
   if (!res.ok) {
     throw new Error("Email does not exist, cannot update");
   }
-
   const response = await res.json();
   console.log(response);
   return response;
 };
+
 export const deleteOrder = async (id: number): Promise<OrderType> => {
   const res = await fetch(`http://localhost:3001/api/order/${id}"`, {
     method: 'DELETE',
@@ -137,6 +152,7 @@ export const deleteOrder = async (id: number): Promise<OrderType> => {
   console.log(response)
   return response
 }
+
 export const api = {
   getOrders,
   fetchOrderByEmail,

@@ -1,4 +1,5 @@
 "use client";
+import router from "next/router";
 import {
   ReactNode,
   createContext,
@@ -27,7 +28,7 @@ export type Drink = {
 };
 
 export type OrderType = {
-  price: number | undefined;
+  price?: number;
   email: string;
   dish: Dish;
   drinks: Drink[];
@@ -84,7 +85,7 @@ export const CartContext = createContext<CartContextType>({
   setGuests: (guests: number) => {},
   setEmail: (email: string) => {},
   clearCart: () => {},
-  setCart: () => {},
+  setCart: (cart: CartItem[]) => {},
 });
 
 export const CartProvider = ({ children }: { children: ReactNode }) => {
@@ -102,7 +103,6 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
         try {
           const parsedDate = new Date(savedDate);
           if (!isNaN(parsedDate.getTime())) {
-            console.log("Retrieved date from local:", parsedDate);
             return parsedDate;
           } else {
             console.error("Invalid date format in localStorage");
@@ -135,7 +135,13 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     }
     return null;
   });
-
+  const setQuantity = (id: string, quantity: number) => {
+    setCart((prevCart) =>
+      prevCart.map((item) =>
+        item.idDrink === id || item.idMeal === id ? { ...item, quantity } : item
+      )
+    );
+  };
   useEffect(() => {
     if (typeof window !== "undefined") {
       localStorage.setItem("cart", JSON.stringify(cart));
@@ -143,13 +149,8 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   }, [cart]);
 
   useEffect(() => {
-    if (typeof window !== "undefined") {
-      if (date) {
-        console.log("Storing date to localStorage:", date);
-        localStorage.setItem("date", date.toISOString());
-      } else {
-        localStorage.removeItem("date");
-      }
+    if (typeof window !== "undefined" && date) {
+      localStorage.setItem("date", date.toISOString());
     }
   }, [date]);
 
@@ -195,13 +196,8 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     console.log("item added to cart:", item);
   };
 
-  const setQuantity = (id: string, quantity: number) => {
-    setCart((prevCart) =>
-      prevCart.map((item) => (item.id === id ? { ...item, quantity } : item))
-    );
-  };
-
   const clearCart = () => {
+    console.log("clearCart function called");
     setCart([]);
     localStorage.removeItem("cart");
     localStorage.removeItem("date");

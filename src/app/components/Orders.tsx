@@ -6,7 +6,7 @@ import { OrderType, api } from "../api";
 import { useRouter } from "next/navigation";
 
 const Orders = () => {
-  const { setQuantity, date, time, guests, email, setCart } = useCart();
+  const { setQuantity, date, time, guests, email, clearCart } = useCart();
   const [totalPrice, setTotalPrice] = useState<number>(0);
   const [orders, setOrders] = useState<OrderType[]>([]);
   const router = useRouter();
@@ -36,8 +36,31 @@ const Orders = () => {
     setTotalPrice(totalPrice);
   };
 
-  const handleQuantityChange = (id: string, quantity: number) => {
+  const handleQuantityChange = (
+    type: "dish" | "drink",
+    id: string,
+    quantity: number
+  ) => {
     setQuantity(id, quantity);
+    setOrders((prevOrders) =>
+      prevOrders.map((order) => {
+        if (type === "dish" && order.dish.idMeal === id) {
+          return {
+            ...order,
+            dish: { ...order.dish, quantity },
+          };
+        }
+        if (type === "drink") {
+          return {
+            ...order,
+            drinks: order.drinks.map((drink) =>
+              drink.idDrink === id ? { ...drink, quantity } : drink
+            ),
+          };
+        }
+        return order;
+      })
+    );
   };
 
   const handleDeleteOrder = async (id: number) => {
@@ -50,23 +73,16 @@ const Orders = () => {
     }
   };
 
-  const clearCart = () => {
-    setCart([]);
-    localStorage.removeItem("cart");
-    localStorage.removeItem("date");
-    localStorage.removeItem("time");
-    localStorage.removeItem("guests");
-    localStorage.removeItem("email");
+  const handleClearCart = () => {
+    clearCart();
+    console.log("cart is cleared");
+    router.push("/");
   };
+
   const formattedDate = date ? date.toLocaleDateString() : "N/A";
   const formattedTime = time || "N/A";
   const numberOfGuests = guests || 0;
   const emailAddress = email || "N/A";
-
-  console.log("Displaying date in Orders component:", date);
-  console.log("Displaying time in Orders component:", time);
-  console.log("Displaying guests in Orders component:", guests);
-  console.log("Displaying email in Orders component:", email);
 
   return (
     <>
@@ -106,6 +122,7 @@ const Orders = () => {
                           value={order.dish.quantity}
                           onChange={(e) =>
                             handleQuantityChange(
+                              "dish",
                               order.dish.idMeal,
                               Number(e.target.value)
                             )
@@ -152,6 +169,7 @@ const Orders = () => {
                             value={drink.quantity}
                             onChange={(e) =>
                               handleQuantityChange(
+                                "drink",
                                 drink.idDrink,
                                 Number(e.target.value)
                               )
@@ -198,7 +216,7 @@ const Orders = () => {
               <div className="flex justify-center mt-10 lg:mb-10">
                 <button
                   className="text-yellow-100 border-2 border-black  bg-black font-bold md:text-2xl"
-                  onClick={clearCart}
+                  onClick={handleClearCart}
                 >
                   CONFIRM ORDER
                 </button>
