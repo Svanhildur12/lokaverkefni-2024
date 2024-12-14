@@ -19,6 +19,17 @@ const Header = () => {
               className="w-32 h-32 md:w-44 lg:w-52 "
             />
           </div>
+          <div>
+            <Link href="/">
+              <p
+                className={`flex items-center text-sm md:text-2xl lg:text-4xl ${
+                  isActive("/SelectDish") ? "text-red-400" : ""
+                }`}
+              >
+                Home
+              </p>
+            </Link>
+          </div>
           <Link href="/SelectDish">
             <p
               className={`flex items-center text-sm md:text-2xl lg:text-4xl ${

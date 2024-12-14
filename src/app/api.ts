@@ -1,4 +1,5 @@
 "use client"
+
 export type Dish = {
   idMeal: string;
   strMeal: string;
@@ -36,12 +37,11 @@ export type DrinkType = {
   price: number;
 };
 export type OrderType = {
-  price?: number;
   email: string;
   date: string;
   time: string;
   id: number;
-  dish: DishType;
+  dishes: DishType[];
   drinks: DrinkType[];
   guests: number;
 };
@@ -73,7 +73,7 @@ export const fetchDrinksById = async (idDrinks: number[]): Promise<Drink[]> => {
 };
 
 export const postOrder =  async (order: OrderType): Promise<OrderType> => {
-  const res = await fetch("http://localhost:3001/api/create-order", {
+  const res = await fetch("http://localhost:5052/api/orders", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -84,10 +84,11 @@ export const postOrder =  async (order: OrderType): Promise<OrderType> => {
     throw new Error("Failed to post data");
   }
  return res.json();
-};
+}
+
 
 export const getOrders = async (): Promise<OrderType[]> => {
-  const res = await fetch("http://localhost:3001/api/orders");
+  const res = await fetch("http://localhost:5052/api/orders");
 
   if (!res.ok) {
     throw new Error("Failed to fetch data");
@@ -102,7 +103,7 @@ export const getOrders = async (): Promise<OrderType[]> => {
 };
 
 export const fetchOrderByEmail = async (email: string) => {
-    const res = await fetch(`http://localhost:3001/api/order/${email}`, {
+    const res = await fetch(`http://localhost:5052/api/orders/${email}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -116,13 +117,13 @@ export const fetchOrderByEmail = async (email: string) => {
       return response;
 }
 
-export const putUpdateOrder =async (order: OrderType): Promise<OrderType> => {
-  const res = await fetch("http://localhost:3001/api/update-order", {
+export const putUpdateOrder = async (id: number): Promise<OrderType> => {
+  const res = await fetch(`http://localhost:5052/api/orders/${id}`, {
     method: "PUT",
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify(order),
+    
   });
 
   if (!res.ok) {
@@ -134,7 +135,7 @@ export const putUpdateOrder =async (order: OrderType): Promise<OrderType> => {
 };
 
 export const deleteOrder = async (id: number): Promise<OrderType> => {
-  const res = await fetch(`http://localhost:3001/api/order/${id}"`, {
+  const res = await fetch(`http://localhost:5052/api/orders/${id}`, {
     method: 'DELETE',
     headers: {
       'Content-Type': 'application/json'

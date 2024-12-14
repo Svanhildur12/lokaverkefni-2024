@@ -31,8 +31,8 @@ const Calendar = () => {
 
   const handleDateSelect = (date: Date | undefined) => {
     if (date) {
-      const formattedDate = formatDate(date);
-      console.log("date picked:", formattedDate);
+      const Date = date.toISOString();
+      console.log("date picked:", Date);
       setSelectedDate(date);
       setDate(date);
       console.log("stored date in context:", date);

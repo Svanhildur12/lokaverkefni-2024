@@ -6,7 +6,7 @@ import { postOrder } from "../api";
 
 const OrderComponent = () => {
   const [emailInput, setEmailInput] = useState<string>("");
-  const { setEmail, cart, date, time, guests, clearCart } = useCart();
+  const { setEmail, cart, date, time, guests } = useCart();
   const router = useRouter();
 
   const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -33,27 +33,28 @@ const OrderComponent = () => {
         price: item.price,
       }));
 
-    const dishItem = cart.find((item) => item.idMeal);
-    if (!dishItem) {
-      console.error("No dish in the cart.");
+    const dishes = cart
+      .filter((item) => item.idMeal)
+      .map((item) => ({
+        id: parseInt(item.idMeal!),
+        idMeal: item.idMeal!,
+        strMeal: item.name,
+        strMealThumb: item.image,
+        strInstructions: item.instructions,
+        strCategory: item.category,
+        price: item.price,
+        quantity: item.quantity,
+      }));
+
+    if (dishes.length === 0) {
+      console.error("No dishes in the cart.");
       return;
     }
 
-    const dish = {
-      id: parseInt(dishItem.idMeal!),
-      idMeal: dishItem.idMeal!,
-      strMeal: dishItem.name,
-      strMealThumb: dishItem.image,
-      strInstructions: dishItem.instructions,
-      strCategory: dishItem.category,
-      price: dishItem.price,
-      quantity: dishItem.quantity,
-    };
-
     const orderData = {
       email: emailInput,
-      dish,
-      drinks,
+      dishes: dishes,
+      drinks: drinks,
       guests: guests,
       date: date ? date.toISOString() : new Date().toISOString(),
       time: time || new Date().toISOString(),
@@ -61,9 +62,9 @@ const OrderComponent = () => {
     };
 
     try {
+      console.log(orderData);
       const postedOrder = await postOrder(orderData);
       console.log("Order posted:", postedOrder);
-      clearCart();
       setEmail(emailInput);
       router.push("/ReceiptPage");
     } catch (error) {

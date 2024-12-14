@@ -29,7 +29,7 @@ export type Drink = {
 export type OrderType = {
   price?: number;
   email: string;
-  dish: Dish;
+  dishes: Dish;
   drinks: Drink[];
   date: string;
   time: string;

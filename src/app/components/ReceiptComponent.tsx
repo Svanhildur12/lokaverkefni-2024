@@ -17,6 +17,7 @@ const ReceiptComponent = () => {
     setDate,
     setTime,
     setGuests,
+    setCart,
   } = useCart();
   const [totalPrice, setTotalPrice] = useState<number>(0);
   const [orders, setOrders] = useState<OrderType[]>([]);
@@ -32,11 +33,12 @@ const ReceiptComponent = () => {
         setDate(new Date(firstOrder.date));
         setTime(firstOrder.time);
         setGuests(firstOrder.guests);
+        setCart;
       }
     } catch (error) {
       console.error("Error fetching orders:", error);
     }
-  }, [setEmail, setDate, setTime, setGuests]);
+  }, [setEmail, setDate, setTime, setGuests, setCart]);
 
   useEffect(() => {
     fetchOrder();
@@ -48,9 +50,12 @@ const ReceiptComponent = () => {
 
   const calculateTotalPrice = () => {
     const totalPrice = orders.reduce((acc, order) => {
-      const dishTotal = order.dish.price * order.dish.quantity;
+      const dishTotal =
+        order.dishes?.reduce((dishAcc, dish) => {
+          return dishAcc + dish.price * dish.quantity;
+        }, 0) || 0;
       const drinkTotal =
-        order.drinks.reduce((drinkAcc, drink) => {
+        order.drinks?.reduce((drinkAcc, drink) => {
           return drinkAcc + drink.price * drink.quantity;
         }, 0) || 0;
       return acc + dishTotal + drinkTotal;
@@ -66,10 +71,12 @@ const ReceiptComponent = () => {
     setQuantity(id, quantity);
     setOrders((prevOrders) =>
       prevOrders.map((order) => {
-        if (type === "dish" && order.dish.idMeal === id) {
+        if (type === "dish") {
           return {
             ...order,
-            dish: { ...order.dish, quantity },
+            dishes: order.dishes.map((dish) =>
+              dish.idMeal == id ? { ...dish, quantity } : dish
+            ),
           };
         }
         if (type === "drink") {
@@ -123,50 +130,55 @@ const ReceiptComponent = () => {
           ) : (
             <div className="bg-black p-2">
               {orders.map((order) => (
-                <div key={order.id.toString()} className="">
-                  <div className="flex items-center justify-evenly mb-4">
-                    <Image
-                      className="w-32 h-32 md:w-52 md:h-48 "
-                      src={order.dish.strMealThumb}
-                      alt={order.dish.strMeal}
-                      width={100}
-                      height={100}
-                    />
-                    <div className="flex-1 ml-2 bg-black">
-                      <h3 className="text-md md:text-2xl font-semibold text-yellow-100 underline">
-                        {order.dish.strMeal}
-                      </h3>
-                      <div className="flex items-center mt-2">
-                        <label className="mr-2 text-white md:text-xl">
-                          Quantity:
-                        </label>
-                        <input
-                          type="number"
-                          value={order.dish.quantity}
-                          onChange={(e) =>
-                            handleQuantityChange(
-                              "dish",
-                              order.dish.idMeal,
-                              Number(e.target.value)
-                            )
-                          }
-                          className=" w-10 md:w-20 md:text-xl p-2 border rounded"
-                          min="1"
-                        />
+                <div key={order.id}>
+                  {order.dishes.map((dish) => (
+                    <div
+                      key={dish.idMeal}
+                      className="flex items-center justify-evenly mb-4"
+                    >
+                      <Image
+                        className="w-32 h-32 md:w-52 md:h-48 "
+                        src={dish.strMealThumb}
+                        alt={dish.strMeal}
+                        width={100}
+                        height={100}
+                      />
+                      <div className="flex-1 ml-2 bg-black">
+                        <h3 className="text-md md:text-2xl font-semibold text-yellow-100 underline">
+                          {dish.strMeal}
+                        </h3>
+                        <div className="flex items-center mt-2">
+                          <label className="mr-2 text-white md:text-xl">
+                            Quantity:
+                          </label>
+                          <input
+                            type="number"
+                            value={dish.quantity}
+                            onChange={(e) =>
+                              handleQuantityChange(
+                                "dish",
+                                dish.idMeal,
+                                Number(e.target.value)
+                              )
+                            }
+                            className=" w-10 md:w-20 md:text-xl p-2 border rounded"
+                            min="1"
+                          />
+                        </div>
+                      </div>
+                      <div className="contents ml-10">
+                        <p className=" text-xl md:text-2xl text-white rounded-md ">
+                          {dish.price * dish.quantity},-
+                        </p>
+                        <button
+                          className="mb-28 mx-2 text-sm md:mb-32 md:text-xl bg-red-600 text-white rounded"
+                          onClick={() => handleDeleteOrder(order.id)}
+                        >
+                          X
+                        </button>
                       </div>
                     </div>
-                    <div className="contents ml-10">
-                      <p className=" text-xl md:text-2xl text-white rounded-md ">
-                        {order.dish.price * order.dish.quantity},-
-                      </p>
-                      <button
-                        className="mb-28 mx-2 text-sm md:mb-32 md:text-xl bg-red-600 text-white rounded"
-                        onClick={() => handleDeleteOrder(order.id)}
-                      >
-                        X
-                      </button>
-                    </div>
-                  </div>
+                  ))}
                   {order.drinks.map((drink) => (
                     <div
                       key={drink.idDrink}
