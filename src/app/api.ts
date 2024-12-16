@@ -72,7 +72,7 @@ export const fetchDrinksById = async (idDrinks: number[]): Promise<Drink[]> => {
   return Promise.all(drinkPromises);
 };
 
-export const postOrder =  async (order: OrderType): Promise<OrderType> => {
+export const postOrder = async (order: OrderType): Promise<OrderType[]> => {
   const res = await fetch("http://localhost:5052/api/orders", {
     method: "POST",
     headers: {
@@ -80,11 +80,17 @@ export const postOrder =  async (order: OrderType): Promise<OrderType> => {
     },
     body: JSON.stringify(order),
   });
+
   if (!res.ok) {
     throw new Error("Failed to post data");
   }
- return res.json();
-}
+
+  console.log("Order posted successfully");
+  
+  // Fetch updated orders after posting
+  const updatedOrders = await getOrders();
+  return updatedOrders;
+};
 
 
 export const getOrders = async (): Promise<OrderType[]> => {
@@ -96,10 +102,12 @@ export const getOrders = async (): Promise<OrderType[]> => {
 
   const response = await res.json();
   console.log("Getting order:", response);
-  response.forEach((order: OrderType) => {
-    order.drinks = order.drinks || []
-  })
-  return response;
+
+   return response.map((order: OrderType) => ({
+    ...order,
+    dishes: order.dishes || [],
+    drinks: order.drinks || [],
+  }));
 };
 
 export const fetchOrderByEmail = async (email: string) => {

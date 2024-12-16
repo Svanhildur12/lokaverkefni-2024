@@ -28,7 +28,7 @@ const ReceiptComponent = () => {
       const fetchOrders = await api.getOrders();
       setOrders(fetchOrders);
       if (fetchOrders.length > 0) {
-        const firstOrder = fetchOrders[1];
+        const firstOrder = fetchOrders[0];
         setEmail(firstOrder.email);
         setDate(new Date(firstOrder.date));
         setTime(firstOrder.time);
