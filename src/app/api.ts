@@ -72,7 +72,7 @@ export const fetchDrinksById = async (idDrinks: number[]): Promise<Drink[]> => {
   return Promise.all(drinkPromises);
 };
 
-export const postOrder = async (order: OrderType): Promise<OrderType[]> => {
+export const postOrder = async (order: OrderType): Promise<OrderType> => {
   const res = await fetch("http://localhost:5052/api/orders", {
     method: "POST",
     headers: {
@@ -82,14 +82,13 @@ export const postOrder = async (order: OrderType): Promise<OrderType[]> => {
   });
 
   if (!res.ok) {
-    throw new Error("Failed to post data");
+    const errorText = await res.text();
+    throw new Error(`Failed to post data: ${errorText}`);
   }
 
-  console.log("Order posted successfully");
-  
-  // Fetch updated orders after posting
-  const updatedOrders = await getOrders();
-  return updatedOrders;
+  const newOrder =  await res.json();
+  console.log("New order created:", newOrder);
+  return newOrder;
 };
 
 
@@ -110,16 +109,18 @@ export const getOrders = async (): Promise<OrderType[]> => {
   }));
 };
 
-export const fetchOrderByEmail = async (email: string) => {
-    const res = await fetch(`http://localhost:5052/api/orders/${email}`, {
+export const fetchOrderById = async (id: number): Promise<OrderType> => {
+    const res = await fetch(`http://localhost:5052/api/orders/${id}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
       },
     });
+
     if (!res.ok) {
-      throw new Error("Could not find order with email");
+      throw new Error("Could not find order with id");
       }
+      
       const response = await res.json();
       console.log(response)
       return response;
@@ -142,7 +143,7 @@ export const putUpdateOrder = async (id: number): Promise<OrderType> => {
   return response;
 };
 
-export const deleteOrder = async (id: number): Promise<OrderType> => {
+export const deleteOrder = async (id: number): Promise<{Message: string}> => {
   const res = await fetch(`http://localhost:5052/api/orders/${id}`, {
     method: 'DELETE',
     headers: {
@@ -153,15 +154,12 @@ export const deleteOrder = async (id: number): Promise<OrderType> => {
   if (!res.ok) {
     throw new Error('Could not find order with id')
   }
-
-  const response = await res.json()
-  console.log(response)
-  return response
-}
+  return await res.json();
+};
 
 export const api = {
   getOrders,
-  fetchOrderByEmail,
+  fetchOrderById,
   putUpdateOrder,
   deleteOrder, 
   postOrder,

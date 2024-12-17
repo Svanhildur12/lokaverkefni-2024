@@ -1,5 +1,5 @@
 "use client";
-import { useCart } from "../context/CartContext";
+import { CartItem, useCart } from "../context/CartContext";
 import { useCallback, useEffect, useState } from "react";
 import Image from "next/image";
 import { OrderType, api } from "../api";
@@ -25,16 +25,51 @@ const ReceiptComponent = () => {
 
   const fetchOrder = useCallback(async () => {
     try {
-      const fetchOrders = await api.getOrders();
-      setOrders(fetchOrders);
-      if (fetchOrders.length > 0) {
-        const firstOrder = fetchOrders[0];
-        setEmail(firstOrder.email);
-        setDate(new Date(firstOrder.date));
-        setTime(firstOrder.time);
-        setGuests(firstOrder.guests);
-        setCart;
+      const newOrderId = localStorage.getItem("newOrderId");
+      if (!newOrderId) {
+        return;
       }
+
+      const order = await api.fetchOrderById(Number(newOrderId));
+      setOrders([order]);
+
+      setEmail(order.email);
+      setDate(new Date(order.date));
+      setTime(order.time);
+      setGuests(order.guests);
+
+      const cartItems: CartItem[] = [
+        ...order.dishes.map((dish) => ({
+          id: dish.idMeal,
+          name: dish.strMeal,
+          image: dish.strMealThumb,
+          category: dish.strCategory,
+          instructions: dish.strInstructions,
+          price: dish.price,
+          quantity: dish.quantity,
+          idMeal: dish.idMeal,
+          strMeal: dish.strMeal,
+          strMealThumb: dish.strMealThumb,
+          strInstructions: dish.strInstructions,
+          strCategory: dish.strCategory,
+        })),
+        ...order.drinks.map((drink) => ({
+          id: drink.idDrink,
+          name: drink.strDrink,
+          image: drink.strDrinkThumb,
+          category: drink.strCategory,
+          instructions: drink.strInstructions,
+          price: drink.price,
+          quantity: drink.quantity,
+          idDrink: drink.idDrink,
+          strDrink: drink.strDrink,
+          strDrinkThumb: drink.strDrinkThumb,
+          strInstructions: drink.strInstructions,
+          strCategory: drink.strCategory,
+        })),
+      ];
+
+      setCart(cartItems);
     } catch (error) {
       console.error("Error fetching orders:", error);
     }
@@ -103,9 +138,15 @@ const ReceiptComponent = () => {
   };
 
   const handleClearCart = () => {
-    console.log("Before clearCart:", localStorage.getItem("cart"));
     clearCart();
-    console.log("After clearCart:", localStorage.getItem("cart"));
+
+    setEmail("");
+    setDate(null);
+    setTime(null);
+    setGuests(0);
+
+    localStorage.removeItem("newOrderId");
+
     router.push("/");
   };
 

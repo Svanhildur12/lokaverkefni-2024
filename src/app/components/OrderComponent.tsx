@@ -2,12 +2,13 @@
 import { useEffect, useState } from "react";
 import { useCart } from "../context/CartContext";
 import { useRouter } from "next/navigation";
-import { postOrder } from "../api";
+import { postOrder, OrderType } from "../api";
 
 const OrderComponent = () => {
   const [emailInput, setEmailInput] = useState<string>("");
   const { setEmail, cart, date, time, guests } = useCart();
   const router = useRouter();
+  const [orders, setOrders] = useState<OrderType[]>([]);
 
   const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setEmailInput(e.target.value);
@@ -53,8 +54,8 @@ const OrderComponent = () => {
 
     const orderData = {
       email: emailInput,
-      dishes: dishes,
-      drinks: drinks,
+      dishes,
+      drinks,
       guests: guests,
       date: date ? date.toISOString() : new Date().toISOString(),
       time: time || new Date().toISOString(),
@@ -62,10 +63,11 @@ const OrderComponent = () => {
     };
 
     try {
-      console.log(orderData);
-      const postedOrder = await postOrder(orderData);
-      console.log("Order posted:", postedOrder);
-      setEmail(emailInput);
+      const newOrder = await postOrder(orderData);
+      console.log("Order posted:", newOrder);
+
+      localStorage.setItem("newOrderId", newOrder.id.toString());
+
       router.push("/ReceiptPage");
     } catch (error) {
       console.error("Error submitting order:", error);
