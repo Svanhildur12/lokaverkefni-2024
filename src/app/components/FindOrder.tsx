@@ -7,6 +7,8 @@ import { useCart } from "../context/CartContext";
 const FindOrder = () => {
   const [showInput, setShowInput] = useState(false);
   const [emailInput, setEmailInput] = useState<string>("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const router = useRouter();
   const { setDate, setEmail, setTime, setGuests } = useCart();
 
@@ -20,21 +22,36 @@ const FindOrder = () => {
 
   const handleRetriveOrder = async (e: React.FormEvent) => {
     e.preventDefault();
+    setLoading(true);
+
     if (emailInput.trim() !== "") {
       try {
         const fetchedOrder = await api.fetchOrderByEmail(emailInput);
         console.log("fetched order:", fetchedOrder);
-        setEmail(fetchedOrder.email);
-        setDate(new Date(fetchedOrder.date));
-        setTime(fetchedOrder.time);
-        setGuests(fetchedOrder.guests);
 
-        router.push(`/ReceiptPage?email=${emailInput}`);
+        if (fetchedOrder.length > 0) {
+          const firstOrder = fetchedOrder[0];
+
+          setEmail(firstOrder.email);
+          setDate(new Date(firstOrder.date));
+          setTime(firstOrder.time);
+          setGuests(firstOrder.guests);
+
+          router.push(`/ReceiptPage?email=${emailInput}`);
+        } else {
+          console.error("No orders found for this email.");
+        }
       } catch (error) {
         console.error("Error retrieving order:", error);
+        setError(
+          "Failed to retrive order. Please check the email and try again."
+        );
+      } finally {
+        setLoading(false);
       }
     } else {
       console.log("Email is required");
+      setLoading(false);
     }
   };
 

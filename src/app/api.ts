@@ -37,7 +37,7 @@ export type DrinkType = {
   price: number;
 };
 export type OrderType = {
-  id?: number;
+  id: number;
   email: string;
   date: string;
   time: string;
@@ -146,6 +146,23 @@ export const fetchOrderById = async (id: number): Promise<OrderType> => {
     console.log("Fetched order:", order);
     return order;
 }
+export const fetchOrderByEmail = async (email: string): Promise<OrderType[]> => {
+  const res = await fetch(`http://localhost:5052/api/orders/byEmail/${encodeURIComponent(email)}`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+
+  if (!res.ok) {
+    const errorText = await res.text();
+    throw new Error(`Failed to fetch orders: ${errorText}`);
+  }
+
+  const response: OrderType[] = await res.json();
+  console.log("Fetched orders:", response);
+  return response;
+};
 
 export const putUpdateOrder = async (id: number): Promise<OrderType> => {
   const res = await fetch(`http://localhost:5052/api/orders/${id}`, {
@@ -186,5 +203,6 @@ export const api = {
   postOrder,
   getRandomDish,
  fetchDrinkById,
- createCustomer
+ createCustomer,
+ fetchOrderByEmail
 }

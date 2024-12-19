@@ -59,6 +59,7 @@ const OrderComponent = () => {
       date: date ? date.toISOString() : new Date().toISOString(),
       time: time || new Date().toISOString(),
       customerId: parseInt(localStorage.getItem("customerId") || "0"),
+      id: 0,
     };
 
     console.log("Order data being sent:", orderData);
