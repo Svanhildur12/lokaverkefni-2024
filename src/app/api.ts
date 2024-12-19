@@ -37,14 +37,34 @@ export type DrinkType = {
   price: number;
 };
 export type OrderType = {
+  id?: number;
   email: string;
   date: string;
   time: string;
-  id: number;
   dishes: DishType[];
   drinks: DrinkType[];
   guests: number;
+  customerId: number;
 };
+
+
+export const createCustomer = async (email: string): Promise<{ id: number; email: string}> => {
+  const res = await fetch("http://localhost:5052/api/customer", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ email }),
+  });
+
+  if (!res.ok) {
+    const errorText = await res.text();
+    throw new Error(`Failed to create customer: ${errorText}`);
+  }
+  const customer = await res.json();
+  return customer;
+};
+
 
 export const getRandomDish = async (): Promise<Dish> => {
   const res = await fetch("https://www.themealdb.com/api/json/v1/1/random.php");
@@ -118,12 +138,13 @@ export const fetchOrderById = async (id: number): Promise<OrderType> => {
     });
 
     if (!res.ok) {
-      throw new Error("Could not find order with id");
-      }
-      
-      const response = await res.json();
-      console.log(response)
-      return response;
+      const errorText = await res.text();
+      throw new Error(`Failed to fetch order: ${errorText}`);
+    }
+  
+    const order = await res.json();
+    console.log("Fetched order:", order);
+    return order;
 }
 
 export const putUpdateOrder = async (id: number): Promise<OrderType> => {
@@ -165,4 +186,5 @@ export const api = {
   postOrder,
   getRandomDish,
  fetchDrinkById,
+ createCustomer
 }

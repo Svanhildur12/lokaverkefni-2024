@@ -6,6 +6,7 @@ import OrderBox from "./HomePage/OrderBox";
 import SpecialOffer from "./HomePage/SpecialOffer";
 import { CartProvider } from "./context/CartContext";
 import FindOrder from "./components/FindOrder";
+import CustomerBox from "./CustomerPage/CustomerBox";
 
 export default function Home() {
   return (

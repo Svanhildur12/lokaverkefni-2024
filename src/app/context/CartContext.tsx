@@ -33,8 +33,8 @@ export type OrderType = {
   drinks: Drink[];
   date: string;
   time: string;
-  id: number;
   guests: number;
+  customerId: number;
 };
 
 export interface CartItem {
