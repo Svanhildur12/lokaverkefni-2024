@@ -37,7 +37,7 @@ const FindOrder = () => {
           setTime(firstOrder.time);
           setGuests(firstOrder.guests);
 
-          router.push(`/ReceiptPage?email=${emailInput}`);
+          router.push(`/OrderInfoPage?email=${emailInput}`);
         } else {
           console.error("No orders found for this email.");
         }

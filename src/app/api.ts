@@ -164,21 +164,21 @@ export const fetchOrderByEmail = async (email: string): Promise<OrderType[]> => 
   return response;
 };
 
-export const putUpdateOrder = async (id: number): Promise<OrderType> => {
+export const putUpdateOrder = async (id: number, order: OrderType): Promise<OrderType> => {
   const res = await fetch(`http://localhost:5052/api/orders/${id}`, {
     method: "PUT",
     headers: {
       "Content-Type": "application/json",
     },
-    
+    body: JSON.stringify(order),
   });
 
   if (!res.ok) {
-    throw new Error("Email does not exist, cannot update");
+    const errorText = await res.text();
+    throw new Error(`Failed to update order: ${errorText}`);
   }
-  const response = await res.json();
-  console.log(response);
-  return response;
+
+  return await res.json();
 };
 
 export const deleteOrder = async (id: number): Promise<{Message: string}> => {
