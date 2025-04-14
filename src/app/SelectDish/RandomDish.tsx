@@ -93,22 +93,22 @@ const RandomDish = () => {
           <Image
             src={dish.strMealThumb}
             alt="random dish"
-            className="border-double border-4 border-yellow-100 rounded-md md:w-full md:h-full lg:ml-52"
+            className="border-double border-4 border-yellow-100 rounded-md md:w-full md:h-full lg:ml-52 lg:w-96"
             width={550}
             height={550}
             priority
           />
           <ScrollableComponent />
         </div>
-        <div className="lg:flex lg:justify-evenly">
+        <div className="lg:flex lg:justify-evenly lg:mt-10">
           <button
-            className=" bg-green-950 text-yellow-100 border-2 border-white rounded-md p-2 m-2 w-34 md:w-50 md:h-14 md:text-2xl lg:text-4xl lg:-ml-20"
+            className=" bg-green-950 text-yellow-100 border-2 border-white rounded-md p-2 m-2 w-34 md:w-50 md:h-14 md:text-2xl lg:text-4xl "
             type="button"
             onClick={fetchDish}
           >
             Generate new
           </button>
-          <div className="flex justify-evenly">
+          <div className="flex justify-evenly lg:mt-52">
             <form
               className="mt-5"
               id="auto"
